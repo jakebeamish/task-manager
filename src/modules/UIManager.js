@@ -46,6 +46,32 @@ export class UIManager {
 		this.renderTasks();
 	}
 
+  /**
+   * @param {Task} task
+   * @param {HTMLElement} span
+   */
+  handleEditTask(task, span) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = task.text;
+    span.replaceWith(input);
+    input.focus();
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        task.text = input.value.trim();
+        this.taskManager.save();
+        this.renderTasks();
+      }
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        this.renderTasks();
+      }
+    })
+  }
+
 	renderTasks() {
 		this.taskListElement.innerHTML = "";
 		this.taskManager.tasks.forEach((task) => {
@@ -78,6 +104,11 @@ export class UIManager {
 		const editButton = document.createElement("button");
 		editButton.classList.add("editButton");
 		editButton.innerText = "Edit";
+    
+    editButton.addEventListener("click", () => {
+      this.handleEditTask(task, span);
+    })
+    
 
 		const deleteButton = document.createElement("button");
 		deleteButton.classList.add("deleteButton");

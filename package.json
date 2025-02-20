@@ -1,0 +1,39 @@
+{
+  "name": "todo-app",
+  "version": "0.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest --coverage",
+    "docs": "npx jsdoc -c jsdoc.json"
+  },
+  "author": "Jake Beamish",
+  "license": "UNLICENSED",
+  "description": "",
+  "devDependencies": {
+    "@babel/core": "^7.26.9",
+    "@babel/preset-env": "^7.26.9",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-html-reporter": "^4.0.1",
+    "jsdoc": "^4.0.4",
+    "prettier": "3.5.1"
+  },
+  "jest": {
+    "coverageDirectory": "reports/coverage",
+    "reporters": [
+      "default",
+      [
+        "./node_modules/jest-html-reporter",
+        {
+          "outputPath": "reports/test-report.html",
+          "includeFailureMsg": true
+        }
+      ]
+    ]
+  },
+  "babel": {
+    "presets": ["@babel/preset-env"]
+  }
+}

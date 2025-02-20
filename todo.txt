@@ -2,4 +2,4 @@
 2025-02-19 Research todo.txt implementations
 2025-02-19 Make a TodoTxtParser
 x 2025-02-20 2025-02-19 Make a Task class
-2025-02-19 Make a TaskValidator
+x 2025-02-20 2025-02-19 Make a TaskValidator

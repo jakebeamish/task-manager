@@ -7,8 +7,9 @@ export class Task {
    * @param {TaskData} taskData - The taskData object.
    * @throws {Error} If validation fails.
    */
-  constructor({ description, completed }) {
-    TaskDataValidator.validate({ description, completed });
+  constructor(taskData) {
+    TaskDataValidator.validate(taskData);
+    const { description, completed } = taskData;
     this.description = description;
     this.completed = completed;
   }

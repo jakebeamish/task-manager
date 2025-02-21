@@ -1,44 +1,47 @@
 import "./types.js";
 
+/**
+ * Helper class for validating {@link TaskData}.
+ */
 export class TaskDataValidator {
   /** Validates a TaskData object.
    * @param {TaskData} taskData - The taskData object to validate.
    * @throws {Error} If validation fails.
    */
   static validate(taskData) {
-    TaskDataValidator.validateDescription(taskData);
-    TaskDataValidator.validateCompleted(taskData);
-    TaskDataValidator.validatePriority(taskData);
+    const { description, completed, priority } = taskData;
+    TaskDataValidator.validateDescription(description);
+    TaskDataValidator.validateCompleted(completed);
+    TaskDataValidator.validatePriority(priority);
   }
 
   /**
-   * @param {TaskData} taskData
+   * @param {string} description
    */
-  static validateDescription(taskData) {
-    const { description } = taskData;
+  static validateDescription(description) {
     if (typeof description !== "string" || description === "") {
       throw new Error("Description must be a non-empty string.");
     }
   }
 
   /**
-   * @param {TaskData} taskData
+   * @param {boolean} completed
    */
-  static validateCompleted(taskData) {
-    const { completed } = taskData;
+  static validateCompleted(completed) {
     if (typeof completed !== "boolean") {
       throw new Error("Completed must be a boolean.");
     }
   }
 
   /**
-   * @param {TaskData} taskData
+   * @param {string | undefined} priority
    */
-  static validatePriority(taskData) {
-    const { priority } = taskData;
+  static validatePriority(priority) {
     if (
       priority &&
-      (priority.charCodeAt(0) < 65 || priority.charCodeAt(0) > 90)
+      (typeof priority !== "string" ||
+        priority.charCodeAt(0) < 65 ||
+        priority.charCodeAt(0) > 90)
     ) {
       throw new Error("Priority must be an uppercase letter.");
     }

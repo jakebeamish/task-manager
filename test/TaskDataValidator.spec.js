@@ -42,4 +42,25 @@ describe("TaskDataValidator", () => {
       }).toThrow("Priority must be an uppercase letter.");
     });
   });
+
+  describe("validateDate", () => {
+    it("should throw an error if date string is '2025-01'", () => {
+      expect(() => {
+        TaskDataValidator.validateDate('2025-01');
+      }).toThrow("Date must be in the format YYYY-MM-DD.");
+    });
+
+    it("should throw an error if date string is '2025/01/05'", () => {
+      expect(() => {
+        TaskDataValidator.validateDate('2025/01/05');
+      }).toThrow("Date must be in the format YYYY-MM-DD.");
+    });
+
+    it("should throw an error if date string is '2025-01'", () => {
+      expect(() => {
+        TaskDataValidator.validateDate('2025-01');
+      }).toThrow("Date must be in the format YYYY-MM-DD.");
+    });
+
+  });
 });

@@ -46,4 +46,14 @@ export class TaskDataValidator {
       throw new Error("Priority must be an uppercase letter.");
     }
   }
+
+  /**
+   * @param {string } date
+   */
+  static validateDate(date) {
+    const jsDate = new Date(date).toISOString().slice(0, 10);
+    if (jsDate !== date) {
+      throw new Error("Date must be in the format YYYY-MM-DD.");
+    }
+  }
 }

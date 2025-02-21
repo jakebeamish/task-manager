@@ -1,3 +1,5 @@
+import './types.js';
+
 export class TaskDataValidator {
   /** Validates a TaskData object.
    * @param {TaskData} taskData - The taskData object to validate.

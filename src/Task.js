@@ -1,9 +1,5 @@
-import { TaskDataValidator } from './TaskDataValidator.js'
-
-/** @typedef {Object} TaskData
- * @property {string} description - Task description (required).
- * @property {boolean} completed - Completion status (required).
- */
+import { TaskDataValidator } from './TaskDataValidator.js';
+import './types.js';
 
 export class Task {
   /**

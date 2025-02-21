@@ -7,3 +7,4 @@ x 2025-02-20 2025-02-19 Make a TaskValidator
 x 2025-02-21 Add priority to TaskDataValidator
 2025-02-21 Add contexts and projects to TaskDataValidator
 2025-02-21 Add priority, contexts, projects and date props to Task
+2025-02-21 TaskDataValidator should confirm required props are present

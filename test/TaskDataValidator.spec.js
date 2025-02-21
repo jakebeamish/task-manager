@@ -25,4 +25,24 @@ describe("TaskDataValidator", () => {
         });
       }).toThrow("Completed must be a boolean.");
     });
+
+    it("should throw an error if priority is 'a'", () => {
+      expect(() => {
+        TaskDataValidator.validate({
+          description: "Valid task body",
+          completed: false,
+          priority: "a"
+        });
+      }).toThrow();
+    });
+    
+  it("should throw an error if priority is '1'", () => {
+      expect(() => {
+        TaskDataValidator.validate({
+          description: "Valid task body",
+          completed: false,
+          priority: "1"
+        });
+      }).toThrow();
+    });
 });

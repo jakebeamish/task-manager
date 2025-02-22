@@ -33,3 +33,25 @@
 - Incomplete tasks should not have completed dates.
 - Created and completed dates should not be in the future.
 
+---
+
+TaskData Validation Decision Table
+
+Conditions:
+- Tasks with completed dates must be completed
+- Completed dates cannot be before created dates
+
+| completed | createdDate | completedDate | *valid* |
+|-|-|-|-|
+| F | Valid | Valid | N |
+| F | Valid | Invalid | N |
+| F | Invalid | Valid | N |
+| F | Invalid | Invalid | N |
+| T | Blank | Valid | Y |
+| T | Invalid | Invalid | N |
+| T | Valid | Valid | Y |
+| T | Valid | Invalid | N |
+| T | Invalid | Valid | N |
+| T | Invalid | Invalid | N |
+
+

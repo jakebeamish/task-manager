@@ -9,10 +9,12 @@ export class TaskDataValidator {
    * @throws {Error} If validation fails.
    */
   static validate(taskData) {
-    const { description, completed, priority } = taskData;
-    TaskDataValidator.validateDescription(description);
-    TaskDataValidator.validateCompleted(completed);
-    TaskDataValidator.validatePriority(priority);
+    const { description, completed, priority = null, createdDate = null, completedDate = null } = taskData;
+    this.validateDescription(description);
+    this.validateCompleted(completed);
+    this.validatePriority(priority);
+    this.validateDate(createdDate);
+    this.validateCompletedDate(taskData);
   }
 
   /**
@@ -51,9 +53,20 @@ export class TaskDataValidator {
    * @param {string } date
    */
   static validateDate(date) {
-    const jsDate = new Date(date).toISOString().slice(0, 10);
-    if (jsDate !== date) {
+    if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       throw new Error("Date must be in the format YYYY-MM-DD.");
+    }
+  }
+
+  static validateCompletedDate({ createdDate, completedDate, completed }) {
+    if (completed !== true && completedDate) {
+      throw new Error(
+        "Completed must be true for a Task to have a completed date."
+      );
+    }
+
+    if (createdDate > completedDate) {
+      throw new Error("Completed date cannot be before created date.");
     }
   }
 }

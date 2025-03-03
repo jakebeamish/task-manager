@@ -1,13 +1,14 @@
 2025-02-19 Define the todo.txt-based format rules
-2025-02-19 Research todo.txt implementations
 2025-02-19 Make a TodoTxtParser
-x 2025-02-20 2025-02-19 Make a Task class
-x 2025-02-20 2025-02-19 Make a TaskValidator
-2025-02-21 Add date props to TaskDataValidator
-x 2025-02-21 Add priority to TaskDataValidator
+2025-02-19 Research todo.txt implementations
 2025-02-21 Add contexts and projects to TaskDataValidator
 2025-02-21 Add priority, contexts, projects and date props to Task
-2025-02-21 TaskDataValidator should confirm required props are present
 2025-02-21 Decide if Task objects should toggle and update themselves
-2025-02-21 Make a TaskManager class for CRUDing Task objects
-2025-02-21 Implement a way to save Tasks to localStorage
+2025-03-03 CSS fade-out completed tasks
+x 2025-02-20 2025-02-19 Make a Task class
+x 2025-02-20 2025-02-19 Make a TaskValidator
+x 2025-02-21 Add date props to TaskDataValidator
+x 2025-02-21 Add priority to TaskDataValidator
+x 2025-02-21 Implement a way to save Tasks to localStorage
+x 2025-02-21 Make a TaskManager class for CRUDing Task objects
+x 2025-02-21 TaskDataValidator should confirm required props are present

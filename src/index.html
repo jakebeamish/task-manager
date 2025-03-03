@@ -8,37 +8,22 @@
     <div class="app-container">
       <div class="content-container">
         <h1>Task Manager</h1>
-
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
         <div class="input-container">
-          <input class="task-input" type="text" placeholder="blah blah" />
+          <input
+            class="task-input"
+            id="taskInput"
+            type="text"
+            placeholder="Enter a task"
+          />
+          <button id="addTaskBtn">Add</button>
         </div>
 
         <div class="tasks-container">
-          <div class="task-card">
-            <p>Task body</p>
-          </div>
-          <div class="task-card">
-            <p>Task body</p>
-          </div>
-          <div class="task-card">
-            <p>Task body</p>
-          </div>
+          <ul id="taskList" class="task-list"></ul>
         </div>
       </div>
-
-      <footer>
-        <a href="" target="_blank">GitHub</a>
-      </footer>
     </div>
+
+    <script src="index.js" type="module"></script>
   </body>
 </html>

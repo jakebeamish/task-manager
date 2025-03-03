@@ -9,7 +9,12 @@ export class TaskDataValidator {
    * @throws {Error} If validation fails.
    */
   static validate(taskData) {
-    const { description, completed, priority = null, createdDate = null, completedDate = null } = taskData;
+    const {
+      description,
+      completed,
+      priority = null,
+      createdDate = null,
+    } = taskData;
     this.validateDescription(description);
     this.validateCompleted(completed);
     this.validatePriority(priority);
@@ -21,7 +26,7 @@ export class TaskDataValidator {
    * @param {string} description
    */
   static validateDescription(description) {
-    if (typeof description !== "string" || description === "") {
+    if (typeof description !== "string" || description.trim() === "") {
       throw new Error("Description must be a non-empty string.");
     }
   }

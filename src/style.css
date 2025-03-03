@@ -1,0 +1,89 @@
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  }
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: Helvetica;
+  font-weight: 400;
+  line-height: 1.5;
+  font-size: 20px;
+  color: #1a1a1a;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Trebuchet MS";
+  /* font-weight: 600; */
+  padding-bottom: 1rem;
+  /* line-height: 1.5; */
+}
+
+a {
+  color: #444444;
+}
+
+a:hover {
+  color: #888888;
+}
+
+input, textarea {
+  font: inherit;
+}
+
+.app-container  {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.content-container {
+  max-width: 36rem;
+  /* padding: 0 8px; */
+
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  /* gap: 8px; */
+  margin-top: 16px;
+}
+
+.task-input {
+  padding: 8px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  line-height: 0.5;
+  background: #f5f5f5;
+  display: flex;
+}
+
+.task-card {
+  background: #fafafa;
+  margin: 10px 0px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  
+}
+
+footer {
+  position: fixed;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+}

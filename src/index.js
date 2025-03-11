@@ -40,18 +40,35 @@ const renderTasks = async () => {
       renderTasks();
     });
 
-    const span = document.createElement("span");
-    const priority = task.priority ?? "";
-    const createdDate = task.createdDate ?? "";
-    const completedDate = task.completedDate ?? "";
+    const taskContentSpan = document.createElement("span");
+    taskContentSpan.classList.add("task-content-span");
+    const priority = task.priority ? `${task.priority} ` : "";
+    const createdDate = task.createdDate ? `${task.createdDate} ` : "";
+    const completedDate = task.completedDate ? `${task.completedDate} ` : "";
 
-    span.textContent = `
-    ${priority}
-    ${createdDate} 
-    ${completedDate} 
-    ${task.description}`;
+    const prioritySpan = document.createElement("span");
+    prioritySpan.classList.add("priority");
+    prioritySpan.textContent = priority;
 
-    li.appendChild(span);
+    const createdDateSpan = document.createElement("span");
+    createdDateSpan.classList.add("date", "created-date");
+    createdDateSpan.textContent = createdDate;
+
+    const completedDateSpan = document.createElement("span");
+    completedDateSpan.classList.add("date", "completed-date");
+    completedDateSpan.textContent = completedDate;
+
+    const descriptionSpan = document.createElement("span");
+    descriptionSpan.textContent = `${task.description}`;
+
+    taskContentSpan.append(
+      prioritySpan,
+      createdDateSpan,
+      completedDateSpan,
+      descriptionSpan
+    );
+
+    li.appendChild(taskContentSpan);
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
@@ -70,7 +87,6 @@ taskInput.addEventListener("keydown", async (e) => {
     const description = taskInput.value.trim();
     if (description) {
       const task = TodoTxtParser.parseLine(description);
-      console.log(task)
       await taskManager.addTask(task);
       taskInput.value = "";
       renderTasks();
@@ -98,7 +114,7 @@ const renderStats = (stats) => {
   totalCompleted.innerText = `Total completed: ${stats.completed}`;
 
   const totalCompletePercent = document.createElement("p");
-  totalCompletePercent.innerText = `Total: ${Math.round(stats.completed/stats.total * 100)}%`
+  totalCompletePercent.innerText = `Total: ${Math.round((stats.completed / stats.total) * 100)}%`;
 
   const createdToday = document.createElement("p");
   createdToday.innerText = `Created today: ${stats.createdToday}`;

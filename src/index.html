@@ -9,10 +9,11 @@
       <div class="content-container">
         <h1>Task Manager</h1>
         <header>
+          <button onclick="toggleTheme()">Change theme</button>
           <div id="statsContainer"></div>
           <div id="optionsContainer"></div>
         </header>
-        <hr>
+        <hr />
         <div id="filtersContainer"></div>
         <div class="input-container">
           <input
@@ -23,7 +24,6 @@
           />
           <button id="addTaskBtn">Add</button>
         </div>
-
         <div class="tasks-container">
           <ul id="taskList" class="task-list"></ul>
         </div>
@@ -31,5 +31,23 @@
     </div>
 
     <script src="index.js" type="module"></script>
+    <script>
+      let index = 0;
+      const toggleTheme = () => {
+        const root = document.documentElement;
+        const themes = ["nord", "nord-light", "dark", "plain"]
+        const newTheme = themes[index % themes.length];
+        root.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+        index++;
+      };
+
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      } else {
+        document.documentElement.setAttribute("data-theme", nord);
+      }
+    </script>
   </body>
 </html>

@@ -13,6 +13,7 @@ export class Task {
       description,
       completed,
       id,
+      priority,
       createdDate,
       completedDate,
       projects,
@@ -23,5 +24,6 @@ export class Task {
     this.id = id || Date.now();
     this.createdDate = createdDate || null;
     this.completedDate = completedDate || null;
+    this.priority = priority || null;
   }
 }

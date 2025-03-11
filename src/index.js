@@ -2,6 +2,7 @@ import { Task } from "./Task.js";
 import { LocalStorageStrategy } from "./LocalStorageStrategy.js";
 import { TaskManager } from "./TaskManager.js";
 import { TaskStats } from "./TaskStats.js";
+import { TodoTxtParser } from "./TodoTxtParser.js";
 import "./types.js";
 
 const taskInput = document.getElementById("taskInput");
@@ -14,6 +15,7 @@ const taskManager = new TaskManager(storageStrategy);
 const taskStats = new TaskStats(taskManager);
 
 const renderTasks = async () => {
+  /** @type {Task[]} */
   const tasks = await taskManager.getTasks();
   const stats = await taskStats.getStats();
   renderStats(stats);
@@ -39,8 +41,16 @@ const renderTasks = async () => {
     });
 
     const span = document.createElement("span");
+    const priority = task.priority ?? "";
+    const createdDate = task.createdDate ?? "";
+    const completedDate = task.completedDate ?? "";
 
-    span.textContent = `${task.createdDate} ${task.completedDate ? task.completedDate : ""} ${task.description}`;
+    span.textContent = `
+    ${priority}
+    ${createdDate} 
+    ${completedDate} 
+    ${task.description}`;
+
     li.appendChild(span);
 
     const deleteBtn = document.createElement("button");
@@ -59,7 +69,9 @@ taskInput.addEventListener("keydown", async (e) => {
   if (e.key === "Enter") {
     const description = taskInput.value.trim();
     if (description) {
-      await taskManager.addTask({ description, completed: false });
+      const task = TodoTxtParser.parseLine(description);
+      console.log(task)
+      await taskManager.addTask(task);
       taskInput.value = "";
       renderTasks();
     }
@@ -69,7 +81,8 @@ taskInput.addEventListener("keydown", async (e) => {
 addTaskBtn.addEventListener("click", async () => {
   const description = taskInput.value.trim();
   if (description) {
-    await taskManager.addTask({ description, completed: false });
+    const task = TodoTxtParser.parseLine(description);
+    await taskManager.addTask(task);
     taskInput.value = "";
     renderTasks();
   }
@@ -84,17 +97,28 @@ const renderStats = (stats) => {
   const totalCompleted = document.createElement("p");
   totalCompleted.innerText = `Total completed: ${stats.completed}`;
 
+  const totalCompletePercent = document.createElement("p");
+  totalCompletePercent.innerText = `Total: ${Math.round(stats.completed/stats.total * 100)}%`
+
   const createdToday = document.createElement("p");
   createdToday.innerText = `Created today: ${stats.createdToday}`;
 
   const completedToday = document.createElement("p");
   completedToday.innerText = `Completed today: ${stats.completedToday}`;
 
+  const completedDailyAverage = document.createElement("p");
+  completedDailyAverage.innerText = `Average completed per day:`;
+
+  const completedWeeklyAverage = document.createElement("p");
+  completedWeeklyAverage.innerText = `Average completed per week:`;
+
   statsContainer.append(
     totalPending,
     totalCompleted,
+    totalCompletePercent,
     createdToday,
-    completedToday
+    completedToday,
+    completedDailyAverage
   );
 };
 

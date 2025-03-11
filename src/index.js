@@ -22,7 +22,7 @@ const renderTasks = async () => {
 
   taskList.innerHTML = "";
 
-  tasks.forEach((task) => {
+  tasks.toReversed().forEach((task) => {
     const li = document.createElement("li");
     li.classList.add("task-item");
 

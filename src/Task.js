@@ -25,5 +25,7 @@ export class Task {
     this.createdDate = createdDate || null;
     this.completedDate = completedDate || null;
     this.priority = priority || null;
+    this.projects = projects || null;
+    this.contexts = contexts || null;
   }
 }

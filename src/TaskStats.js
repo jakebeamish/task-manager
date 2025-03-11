@@ -3,9 +3,20 @@ export class TaskStats {
     this.taskManager = taskManager;
   }
 
+  async getProjects() {
+    const tasks = await this.taskManager.getTasks();
+    const projects = [...new Set(tasks.flatMap(task => task.projects))];
+    return projects;
+  }
+
+  async getContexts() {
+    const tasks = await this.taskManager.getTasks();
+    const contexts = [...new Set(tasks.flatMap(task => task.contexts))];
+    return contexts;
+  }
+
   async getStats() {
     const tasks = await this.taskManager.getTasks();
-    console.table(tasks)
     return {
       total: tasks.length,
       completed: tasks.filter(task => task.completed).length,

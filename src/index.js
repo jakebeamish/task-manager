@@ -10,6 +10,7 @@ const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
 const statsContainer = document.getElementById("statsContainer");
 const optionsContainer = document.getElementById("optionsContainer");
+const filtersContainer = document.getElementById("filtersContainer");
 
 const storageStrategy = new LocalStorageStrategy();
 const taskManager = new TaskManager(storageStrategy);
@@ -27,11 +28,11 @@ const renderOptions = () => {
   hideCompletedTasksCheckbox.id = "hideCompletedTasks";
   hideCompletedTasksCheckbox.addEventListener("click", () => {
     renderTasks();
-  })
+  });
   const hideCompletedTasksLabel = document.createElement("label");
   hideCompletedTasksLabel.innerText = "Hide completed tasks";
   hideCompletedTasksLabel.htmlFor = hideCompletedTasksCheckbox.id;
-  optionContainer.append(hideCompletedTasksCheckbox, hideCompletedTasksLabel)
+  optionContainer.append(hideCompletedTasksCheckbox, hideCompletedTasksLabel);
   optionsContainer.append(optionContainer);
 
   optionContainer = document.createElement("div");
@@ -42,32 +43,117 @@ const renderOptions = () => {
   hideDatesInTasksCheckbox.id = "hideDatesInTasks";
   hideDatesInTasksCheckbox.addEventListener("click", () => {
     renderTasks();
-  })
+  });
   const hideDatesInTasksLabel = document.createElement("label");
   hideDatesInTasksLabel.innerText = "Hide dates in tasks";
   hideDatesInTasksLabel.htmlFor = hideDatesInTasksCheckbox.id;
-  optionContainer.append(hideDatesInTasksCheckbox, hideDatesInTasksLabel)
+  optionContainer.append(hideDatesInTasksCheckbox, hideDatesInTasksLabel);
   optionsContainer.append(optionContainer);
-}
+};
 
 renderOptions();
+
+const projectsFilter = new Set();
+const contextsFilter = new Set();
+
+const renderFilters = async () => {
+  filtersContainer.innerHTML = "";
+
+  const projects = await taskStats.getProjects();
+  const projectsList = document.createElement("ul");
+  projectsList.classList.add("filter-list");
+  projects.forEach((project) => {
+    if (!project) return;
+    const li = document.createElement("li");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = project;
+    if (projectsFilter.has(project)) {
+      checkbox.checked = true;
+    }
+    checkbox.addEventListener("click", () => {
+      if (checkbox.checked) {
+        projectsFilter.add(project);
+      } else {
+        projectsFilter.delete(project);
+      }
+      renderTasks();
+    });
+    const label = document.createElement("label");
+    label.htmlFor = project;
+    label.textContent = project;
+    li.append(checkbox, label);
+    projectsList.append(li);
+  });
+
+  const contexts = await taskStats.getContexts();
+  const contextsList = document.createElement("ul");
+  contextsList.classList.add("filter-list");
+  contexts.forEach((context) => {
+    if (!context) return;
+    const li = document.createElement("li");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = context;
+    if (contextsFilter.has(context)) checkbox.checked = true;
+    checkbox.addEventListener("click", () => {
+      if (checkbox.checked) {
+        contextsFilter.add(context);
+      } else {
+        contextsFilter.delete(context);
+      }
+      renderTasks();
+    });
+    const label = document.createElement("label");
+    label.htmlFor = context;
+    label.textContent = context;
+    li.append(checkbox, label);
+    contextsList.append(li);
+  });
+
+  filtersContainer.append(projectsList, contextsList);
+};
+
+renderFilters();
 
 const renderTasks = async () => {
   /** @type {Task[]} */
   const tasks = await taskManager.getTasks();
   const stats = await taskStats.getStats();
   renderStats(stats);
- 
+
   /** @type {boolean} */
-  const hideCompletedTasks = document.getElementById("hideCompletedTasks").checked;
+  const hideCompletedTasks =
+    document.getElementById("hideCompletedTasks").checked;
   /** @type {boolean} */
   const hideDatesInTasks = document.getElementById("hideDatesInTasks").checked;
   taskList.innerHTML = "";
 
   tasks.toReversed().forEach((task) => {
-
     if (hideCompletedTasks && task.completed) return;
 
+    let valid = true;
+    if (projectsFilter.size > 0) {
+      if (task.projects === null) return;
+      valid = false;
+      for (let project of task.projects) {
+        if (projectsFilter.has(project)) {
+          valid = true;
+        }
+      }
+    }
+
+    if (contextsFilter.size > 0) {
+      if (task.contexts === null) return;
+      valid = false;
+      for (let context of task.contexts) {
+        if (contextsFilter.has(context)) {
+          valid = true;
+        }
+      }
+    }
+
+    if (!valid) return;
     const li = document.createElement("li");
     li.classList.add("task-item");
 
@@ -106,12 +192,11 @@ const renderTasks = async () => {
     const descriptionSpan = document.createElement("span");
     descriptionSpan.textContent = `${task.description}`;
 
-    taskContentSpan.append(
-      prioritySpan,
-    );
-    if (!hideDatesInTasks) taskContentSpan.append(createdDateSpan, completedDateSpan);
+    taskContentSpan.append(prioritySpan);
+    if (!hideDatesInTasks)
+      taskContentSpan.append(createdDateSpan, completedDateSpan);
 
-    taskContentSpan.append(descriptionSpan)
+    taskContentSpan.append(descriptionSpan);
     li.appendChild(taskContentSpan);
 
     const deleteBtn = document.createElement("button");
@@ -134,6 +219,7 @@ taskInput.addEventListener("keydown", async (e) => {
       await taskManager.addTask(task);
       taskInput.value = "";
       renderTasks();
+      renderFilters();
     }
   }
 });

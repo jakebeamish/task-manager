@@ -53,6 +53,18 @@ header {
 
 }
 
+.filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  /* justify-content: ; */
+  margin-top: 1rem;
+}
+
+.filter-list li {
+  list-style: none;
+  margin-right: 1rem;
+}
+
 .input-container {
   display: flex;
   /* align-items: stretch; */

@@ -52,16 +52,31 @@ input, textarea {
   display: flex;
   /* align-items: stretch; */
   gap: 8px;
-  margin-bottom: 16px;
+  margin: 10px 0px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fafafa;
+  align-items: center;
+}
+
+.input-container input {
+  margin-right: 0rem;
 }
 
 .task-input {
   /* padding: 8px; */
   border: 1px solid #ddd;
   border-radius: 4px;
+  border: none;
   width: 100%;
-  background: #f5f5f5;
+  background: transparent;
+  margin-left: 1rem;
   /* display: flex; */
+}
+
+.task-input:focus {
+  outline: none;
 }
 
 .task-item {
@@ -77,7 +92,7 @@ input, textarea {
 }
 
 .task-item input {
-  margin-right: 1em;
+  margin-right: 0.5rem;
 }
 
 .task-item button {

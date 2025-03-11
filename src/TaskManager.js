@@ -18,7 +18,6 @@ export class TaskManager {
     const createdDate =
       taskData.createdDate ?? new Date().toISOString().split("T")[0];
     taskData.createdDate = createdDate;
-    console.table(taskData)
     const task = new Task(taskData);
     await this.storageStrategy.save(task);
   }

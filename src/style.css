@@ -12,7 +12,6 @@ html, body {
 body {
   font-family: Helvetica;
   font-weight: 400;
-  line-height: 1.5;
   font-size: 16px;
   color: #1a1a1a;
 }
@@ -44,6 +43,7 @@ input, textarea {
 
 .content-container {
   max-width: 36rem;
+  width: 70%;
   /* padding: 0 8px; */
 
 }
@@ -70,7 +70,19 @@ input, textarea {
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  width: 100%;
+  list-style: none;
   display: flex;
+  align-items: center;
+}
+
+.task-item input {
+  margin-right: 1em;
+}
+
+.task-item button {
+  margin-left: auto;
+  display: inline;
 }
 
 footer {

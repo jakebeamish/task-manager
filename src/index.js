@@ -114,7 +114,7 @@ const renderStats = (stats) => {
   totalCompleted.innerText = `Total completed: ${stats.completed}`;
 
   const totalCompletePercent = document.createElement("p");
-  totalCompletePercent.innerText = `Total: ${Math.round((stats.completed / stats.total) * 100)}%`;
+  totalCompletePercent.innerText = `Total: ${Math.round((stats.completed / stats.total) * 100) || 0}%`;
 
   const createdToday = document.createElement("p");
   createdToday.innerText = `Created today: ${stats.createdToday}`;

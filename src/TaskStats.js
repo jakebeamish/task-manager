@@ -15,6 +15,12 @@ export class TaskStats {
     return contexts;
   }
 
+  async getPriorities() {
+    const tasks = await this.taskManager.getTasks();
+    const priorities = [... new Set(tasks.map(task => task.priority))];
+    return priorities;
+  }
+
   async getStats() {
     const tasks = await this.taskManager.getTasks();
     return {

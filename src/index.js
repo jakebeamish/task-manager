@@ -55,6 +55,7 @@ renderOptions();
 
 const projectsFilter = new Set();
 const contextsFilter = new Set();
+const prioritiesFilter = new Set();
 
 const renderFilters = async () => {
   filtersContainer.innerHTML = "";
@@ -71,17 +72,21 @@ const renderFilters = async () => {
     if (projectsFilter.has(project)) {
       checkbox.checked = true;
     }
+
     checkbox.addEventListener("click", () => {
       if (checkbox.checked) {
         projectsFilter.add(project);
+        li.classList.add("selected-project");
       } else {
         projectsFilter.delete(project);
+        li.classList.remove("selected-project");
       }
       renderTasks();
     });
     const label = document.createElement("label");
     label.htmlFor = project;
     label.textContent = project;
+    label.classList.add("project-label");
     li.append(checkbox, label);
     projectsList.append(li);
   });
@@ -99,8 +104,10 @@ const renderFilters = async () => {
     checkbox.addEventListener("click", () => {
       if (checkbox.checked) {
         contextsFilter.add(context);
+        li.classList.add("selected-context");
       } else {
         contextsFilter.delete(context);
+        li.classList.remove("selected-context");
       }
       renderTasks();
     });
@@ -111,7 +118,34 @@ const renderFilters = async () => {
     contextsList.append(li);
   });
 
-  filtersContainer.append(projectsList, contextsList);
+  const priorities = await taskStats.getPriorities();
+  const prioritiesList = document.createElement("ul");
+  prioritiesList.classList.add("filter-list");
+  priorities.forEach((priority) => {
+    if (!priority) return;
+    const li = document.createElement("li");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = priority;
+    if (prioritiesFilter.has(priority)) checkbox.checked = true;
+    checkbox.addEventListener("click", () => {
+      if (checkbox.checked) {
+        prioritiesFilter.add(priority);
+        li.classList.add("selected-priority");
+      } else {
+        prioritiesFilter.delete(priority);
+        li.classList.remove("selected-priority")
+      }
+      renderTasks();
+    });
+    const label = document.createElement("label");
+    label.htmlFor = priority;
+    label.textContent = priority;
+    li.append(checkbox, label);
+    prioritiesList.append(li);
+  });
+
+  filtersContainer.append(projectsList, contextsList, prioritiesList);
 };
 
 renderFilters();
@@ -150,6 +184,14 @@ const renderTasks = async () => {
         if (contextsFilter.has(context)) {
           valid = true;
         }
+      }
+    }
+
+    if (prioritiesFilter.size > 0) {
+      if (task.priority === null) return;
+      valid = false;
+      if (prioritiesFilter.has(task.priority)) {
+        valid = true;
       }
     }
 

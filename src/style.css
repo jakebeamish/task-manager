@@ -123,6 +123,33 @@ header {
 .filter-list li {
   list-style: none;
   margin-right: 1rem;
+  padding: 8px 12px;
+  margin: 3px;
+}
+
+.filter-list li input {
+  display: none;
+}
+
+.selected-project {
+  background: var(--secondary-bg-color);
+  padding: 8px 12px;
+  margin: 3px;
+  border-radius: 4px;
+}
+
+.selected-context {
+  background: var(--secondary-bg-color);
+  padding: 8px 12px;
+  margin: 3px;
+  border-radius: 4px;
+}
+
+.selected-priority {
+  background: var(--secondary-bg-color);
+  padding: 8px 12px;
+  margin: 3px;
+  border-radius: 4px;
 }
 
 .input-container {

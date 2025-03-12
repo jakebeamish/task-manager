@@ -8,12 +8,12 @@
     <div class="app-container">
       <div class="content-container">
         <h1>Task Manager</h1>
-        <header>
+        <button id="toggleHeader" onclick="toggleHeader()">☰</button>
+        <header id="header">
           <button onclick="toggleTheme()">Change theme</button>
           <div id="statsContainer"></div>
           <div id="optionsContainer"></div>
         </header>
-        <hr />
         <div id="filtersContainer"></div>
         <div class="input-container">
           <input
@@ -33,6 +33,7 @@
     <script src="src/index.js" type="module"></script>
     <script>
       let index = 0;
+      let hidden = false;
       const toggleTheme = () => {
         const root = document.documentElement;
         const themes = ["nord", "nord-light", "dark", "plain"]
@@ -47,6 +48,16 @@
         document.documentElement.setAttribute("data-theme", savedTheme);
       } else {
         document.documentElement.setAttribute("data-theme", nord);
+      }
+
+      const toggleHeader = () => {
+        hidden = !hidden;
+        const header = document.querySelector("#header");
+        if (hidden) {
+          header.style.display = "none";
+        }  else {
+          header.style.display = "flex";
+        }
       }
     </script>
   </body>

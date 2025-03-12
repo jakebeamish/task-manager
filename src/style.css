@@ -52,7 +52,7 @@
 :root[data-theme="plain"] {
   --text-color: black;
   --bg-color: white;
-  --secondary-bg-color: ivory;
+  --secondary-bg-color: #f2f2f2;
   --primary-color: midnightblue;
   --secondary-color: white;
 }
@@ -92,9 +92,19 @@ input, textarea {
   font: inherit;
 }
 
+h1 {
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+
 header {
   display: flex;
   justify-content: space-between;
+  background: var(--secondary-bg-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  /* padding-bottom: 0.5rem; */
 }
 
 .app-container  {
@@ -104,6 +114,12 @@ header {
   margin-top: 2rem;
   height: 100vh;
   /* width: 100%; */
+}
+
+#toggleHeader {
+  background-color: var(--secondary-bg-color);
+  float: right;
+  font-size: 12px;
 }
 
 .content-container {
@@ -232,6 +248,4 @@ button {
   background-color: var(--bg-color);
   color: var(--text-color);
   border: none;
-  /* border: 1px solid var(--text-color); */
-  height: 100%;
 }

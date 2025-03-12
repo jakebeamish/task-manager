@@ -276,7 +276,7 @@ addTaskBtn.addEventListener("click", async () => {
   }
 });
 
-const renderStats = (stats) => {
+const renderStats = async (stats) => {
   statsContainer.innerHTML = "";
 
   const totalPending = document.createElement("p");
@@ -295,7 +295,8 @@ const renderStats = (stats) => {
   completedToday.innerText = `Completed today: ${stats.completedToday}`;
 
   const completedDailyAverage = document.createElement("p");
-  completedDailyAverage.innerText = `Average completed per day:`;
+  const avg = await taskStats.getAverageCompletedPerDay();
+  completedDailyAverage.innerText = `Average completed per day: ${Math.round(avg * 100)/100}`;
 
   const completedWeeklyAverage = document.createElement("p");
   completedWeeklyAverage.innerText = `Average completed per week:`;

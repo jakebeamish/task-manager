@@ -99,6 +99,7 @@ h1 {
 
 header {
   display: flex;
+  gap:1rem;
   justify-content: space-between;
   background: var(--secondary-bg-color);
   padding: 8px 12px;

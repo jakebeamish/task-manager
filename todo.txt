@@ -1,3 +1,11 @@
+2025-03-17 Check task input for tasks that are too long (how long?)
+2025-03-17 Sort task items by
+2025-03-14 StorageStrategies should delete tasks by id
+2025-03-14 Tasks should be editable
+2025-03-14 Tasks should have due dates
+2025-03-14 Format dates nicely
+2025-03-14 Order by due date - earliest first
+2025-03-14 Alllso, overdue
 2025-02-19 Define the todo.txt-based format rules
 2025-02-19 Research todo.txt implementations
 2025-02-21 Add contexts and projects to TaskDataValidator

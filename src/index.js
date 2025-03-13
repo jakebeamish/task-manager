@@ -49,6 +49,14 @@ const renderOptions = () => {
   hideDatesInTasksLabel.htmlFor = hideDatesInTasksCheckbox.id;
   optionContainer.append(hideDatesInTasksCheckbox, hideDatesInTasksLabel);
   optionsContainer.append(optionContainer);
+
+  const closeButton = document.createElement("button");
+  closeButton.innerText = "X";
+  closeButton.classList.add("close-btn");
+  optionsContainer.append(closeButton);
+  closeButton.addEventListener("click", () => {
+    toggleOptions();
+  });
 };
 
 renderOptions();
@@ -57,10 +65,11 @@ const projectsFilter = new Set();
 const contextsFilter = new Set();
 const prioritiesFilter = new Set();
 
-const renderFilters = async () => {
+const renderFilters = (stats) => {
   filtersContainer.innerHTML = "";
 
-  const projects = await taskStats.getProjects();
+  const { projects, contexts, priorities } = stats;
+
   const projectsList = document.createElement("ul");
   projectsList.classList.add("filter-list");
   projects.forEach((project) => {
@@ -91,7 +100,6 @@ const renderFilters = async () => {
     projectsList.append(li);
   });
 
-  const contexts = await taskStats.getContexts();
   const contextsList = document.createElement("ul");
   contextsList.classList.add("filter-list");
   contexts.forEach((context) => {
@@ -118,7 +126,6 @@ const renderFilters = async () => {
     contextsList.append(li);
   });
 
-  const priorities = await taskStats.getPriorities();
   const prioritiesList = document.createElement("ul");
   prioritiesList.classList.add("filter-list");
   priorities.forEach((priority) => {
@@ -134,7 +141,7 @@ const renderFilters = async () => {
         li.classList.add("selected-priority");
       } else {
         prioritiesFilter.delete(priority);
-        li.classList.remove("selected-priority")
+        li.classList.remove("selected-priority");
       }
       renderTasks();
     });
@@ -148,12 +155,21 @@ const renderFilters = async () => {
   filtersContainer.append(projectsList, contextsList, prioritiesList);
 };
 
-renderFilters();
+// renderFilters();
+//
+const initialiseFilters = async () => {
+  const tasks = await taskManager.getTasks();
+  const stats = taskStats.getStats(tasks);
+  renderFilters(stats);
+};
+
+initialiseFilters();
 
 const renderTasks = async () => {
   /** @type {Task[]} */
   const tasks = await taskManager.getTasks();
-  const stats = await taskStats.getStats();
+  const stats = taskStats.getStats(tasks);
+  // renderFilters(stats);
   renderStats(stats);
 
   /** @type {boolean} */
@@ -167,31 +183,28 @@ const renderTasks = async () => {
     if (hideCompletedTasks && task.completed) return;
 
     let valid = true;
+
     if (projectsFilter.size > 0) {
-      if (task.projects === null) return;
-      valid = false;
-      for (let project of task.projects) {
-        if (projectsFilter.has(project)) {
-          valid = true;
-        }
+      if (
+        !task.projects ||
+        !task.projects.some((project) => projectsFilter.has(project))
+      ) {
+        valid = false;
       }
     }
 
     if (contextsFilter.size > 0) {
-      if (task.contexts === null) return;
-      valid = false;
-      for (let context of task.contexts) {
-        if (contextsFilter.has(context)) {
-          valid = true;
-        }
+      if (
+        !task.contexts ||
+        !task.contexts.some((context) => contextsFilter.has(context))
+      ) {
+        valid = false;
       }
     }
 
     if (prioritiesFilter.size > 0) {
-      if (task.priority === null) return;
-      valid = false;
-      if (prioritiesFilter.has(task.priority)) {
-        valid = true;
+      if (!task.priority || !prioritiesFilter.has(task.priority)) {
+        valid = false;
       }
     }
 
@@ -246,6 +259,7 @@ const renderTasks = async () => {
     deleteBtn.addEventListener("click", async () => {
       await taskManager.deleteTask(task);
       renderTasks();
+      initialiseFilters();
     });
 
     li.appendChild(deleteBtn);
@@ -261,7 +275,7 @@ taskInput.addEventListener("keydown", async (e) => {
       await taskManager.addTask(task);
       taskInput.value = "";
       renderTasks();
-      renderFilters();
+      initialiseFilters();
     }
   }
 });
@@ -273,10 +287,11 @@ addTaskBtn.addEventListener("click", async () => {
     await taskManager.addTask(task);
     taskInput.value = "";
     renderTasks();
+    initialiseFilters();
   }
 });
 
-const renderStats = async (stats) => {
+const renderStats = (stats) => {
   statsContainer.innerHTML = "";
 
   const totalPending = document.createElement("p");
@@ -295,20 +310,31 @@ const renderStats = async (stats) => {
   completedToday.innerText = `Completed today: ${stats.completedToday}`;
 
   const completedDailyAverage = document.createElement("p");
-  const avg = await taskStats.getAverageCompletedPerDay();
-  completedDailyAverage.innerText = `Average completed per day: ${Math.round(avg * 100)/100}`;
+  completedDailyAverage.innerText = `Average completed per day: ${Math.round(stats.averageCompletedPerDay * 100) / 100}`;
 
   const completedWeeklyAverage = document.createElement("p");
   completedWeeklyAverage.innerText = `Average completed per week:`;
 
-  statsContainer.append(
+  [
     totalPending,
     totalCompleted,
     totalCompletePercent,
     createdToday,
     completedToday,
-    completedDailyAverage
-  );
+    completedDailyAverage,
+  ].forEach((item) => {
+    const statContainer = document.createElement("div");
+    statContainer.classList.add("stat-container");
+    statContainer.append(item);
+    statsContainer.append(statContainer);
+  });
+  const closeButton = document.createElement("button");
+  closeButton.innerText = "X";
+  closeButton.classList.add("close-btn");
+  statsContainer.append(closeButton);
+  closeButton.addEventListener("click", () => {
+    toggleStats();
+  });
 };
 
 renderTasks();

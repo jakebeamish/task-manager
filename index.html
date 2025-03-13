@@ -7,13 +7,16 @@
   <body>
     <div class="app-container">
       <div class="content-container">
-        <h1>Task Manager</h1>
-        <button id="toggleHeader" onclick="toggleHeader()">☰</button>
+        <!-- <button id="toggleHeader" onclick="toggleHeader()">☰</button> -->
         <header id="header">
-          <button onclick="toggleTheme()">Change theme</button>
-          <div id="statsContainer"></div>
-          <div id="optionsContainer"></div>
+        <h1>Task Manager</h1>
+          <nav>
+        <button id="toggleStats" onclick="toggleStats()">Stats</button>
+        <button id="toggleOptions" onclick="toggleOptions()">Options</button>
+          </nav>
         </header>
+          <div id="optionsContainer"></div>
+          <div id="statsContainer"></div>
         <div id="filtersContainer"></div>
         <div class="input-container">
           <input
@@ -33,30 +36,32 @@
     <script src="src/index.js" type="module"></script>
     <script>
       let index = 0;
-      let hidden = false;
-      const toggleTheme = () => {
-        const root = document.documentElement;
-        const themes = ["nord", "nord-light", "dark", "plain"]
-        const newTheme = themes[index % themes.length];
-        root.setAttribute("data-theme", newTheme);
-        localStorage.setItem("theme", newTheme);
-        index++;
-      };
+      let showOptions = false;
+      let showStats = false;
 
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme) {
-        document.documentElement.setAttribute("data-theme", savedTheme);
-      } else {
-        document.documentElement.setAttribute("data-theme", nord);
+      document.documentElement.setAttribute("data-theme", "dark");
+
+      const toggleOptions = () => {
+        showOptions = !showOptions;
+        const options = document.querySelector("#optionsContainer");
+        const button = document.querySelector("#toggleOptions");
+        button.classList.toggle("selected")
+        if (showOptions) {
+          options.style.display = "block";
+        } else {
+          options.style.display = "none";
+        }
       }
 
-      const toggleHeader = () => {
-        hidden = !hidden;
-        const header = document.querySelector("#header");
-        if (hidden) {
-          header.style.display = "none";
-        }  else {
-          header.style.display = "flex";
+      const toggleStats = () => {
+        showStats = !showStats;
+        const stats = document.querySelector("#statsContainer");
+        const button = document.querySelector("#toggleStats");
+        button.classList.toggle("selected")
+        if (showStats) {
+          stats.style.display = "block";
+        } else {
+          stats.style.display = "none";
         }
       }
     </script>

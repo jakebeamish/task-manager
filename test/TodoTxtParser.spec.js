@@ -2,6 +2,20 @@ import { TodoTxtParser } from "../src/TodoTxtParser.js";
 import { Task } from "../src/Task.js"
 
 describe("TodoTxtParser", () => {
+
+  describe("parse", () => {
+    test("Returns an empty array given an empty string", () => {
+      expect(TodoTxtParser.parse("")).toEqual([]);
+    });
+    test("Returns an array of 2 task objects given a string with 2 lines", () => {
+      const input =
+        `This is task 1\n
+         This is task 2`;
+      const result = TodoTxtParser.parse(input);
+      expect(result.length).toBe(2)
+    });
+  });
+
   describe("parseCompletion", () => {
     test.each([
       ["x ", true],

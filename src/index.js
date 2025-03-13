@@ -1,5 +1,6 @@
 import { Task } from "./Task.js";
-import { LocalStorageStrategy } from "./LocalStorageStrategy.js";
+// import { LocalStorageStrategy } from "./LocalStorageStrategy.js";
+import { RemoteStorageStrategy } from "./RemoteStorageStrategy.js";
 import { TaskManager } from "./TaskManager.js";
 import { TaskStats } from "./TaskStats.js";
 import { TodoTxtParser } from "./TodoTxtParser.js";
@@ -12,7 +13,7 @@ const statsContainer = document.getElementById("statsContainer");
 const optionsContainer = document.getElementById("optionsContainer");
 const filtersContainer = document.getElementById("filtersContainer");
 
-const storageStrategy = new LocalStorageStrategy();
+const storageStrategy = new RemoteStorageStrategy();
 const taskManager = new TaskManager(storageStrategy);
 const taskStats = new TaskStats(taskManager);
 
@@ -165,7 +166,7 @@ const renderTasks = async () => {
 
   tasks.toReversed().forEach((task) => {
     if (hideCompletedTasks && task.completed) return;
-
+    console.log(task);
     let valid = true;
     if (projectsFilter.size > 0) {
       if (task.projects === null) return;

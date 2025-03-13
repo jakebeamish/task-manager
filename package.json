@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "jest --coverage",
-    "docs": "npx jsdoc -c jsdoc.json"
+    "docs": "npx jsdoc -c jsdoc.json",
+    "start": "node src/server.js"
   },
   "author": "Jake Beamish",
   "license": "UNLICENSED",
@@ -39,7 +40,9 @@
     ]
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "pg": "^8.14.0"
   }
 }

@@ -5,27 +5,22 @@ export class TaskStats {
     this.taskManager = taskManager;
   }
 
-  async getProjects() {
-    const tasks = await this.taskManager.getTasks();
+  getProjects(tasks) {
     const projects = [...new Set(tasks.flatMap((task) => task.projects))];
-    return projects;
+    return projects || [];
   }
 
-  async getContexts() {
-    const tasks = await this.taskManager.getTasks();
+  getContexts(tasks) {
     const contexts = [...new Set(tasks.flatMap((task) => task.contexts))];
-    return contexts;
+    return contexts || [];
   }
 
-  async getPriorities() {
-    const tasks = await this.taskManager.getTasks();
+  getPriorities(tasks) {
     const priorities = [...new Set(tasks.map((task) => task.priority))];
-    return priorities;
+    return priorities || [];
   }
 
-  async getAverageCompletedPerDay() {
-    const tasks = await this.taskManager.getTasks();
-
+  getAverageCompletedPerDay(tasks) {
     const completedTasks = tasks.filter((task) => task.completed);
     if (completedTasks.length === 0) return 0;
 
@@ -41,10 +36,8 @@ export class TaskStats {
     return averageCompletedPerDay;
   }
 
-  async getStats() {
-    const tasks = await this.taskManager.getTasks();
-
-    return {
+  getStats(tasks) {
+    const stats = {
       total: tasks.length,
       completed: tasks.filter((task) => task.completed).length,
       pending: tasks.filter((task) => !task.completed).length,
@@ -57,6 +50,13 @@ export class TaskStats {
           task.completedDate === new Date().toISOString().split("T")[0]
         );
       }).length,
+      averageCompletedPerDay: this.getAverageCompletedPerDay(tasks),
+      projects: (this.getProjects(tasks)),
+      contexts: this.getContexts(tasks),
+      priorities: this.getPriorities(tasks)
     };
+
+    console.log(stats);
+    return stats;
   }
 }

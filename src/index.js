@@ -58,10 +58,12 @@ const projectsFilter = new Set();
 const contextsFilter = new Set();
 const prioritiesFilter = new Set();
 
-const renderFilters = async () => {
+const renderFilters = (stats) => {
   filtersContainer.innerHTML = "";
 
-  const projects = await taskStats.getProjects();
+  const { projects, contexts, priorities } = stats;
+
+  // const projects = taskStats.getProjects(tasks);
   const projectsList = document.createElement("ul");
   projectsList.classList.add("filter-list");
   projects.forEach((project) => {
@@ -92,7 +94,7 @@ const renderFilters = async () => {
     projectsList.append(li);
   });
 
-  const contexts = await taskStats.getContexts();
+  // const contexts = taskStats.getContexts(tasks);
   const contextsList = document.createElement("ul");
   contextsList.classList.add("filter-list");
   contexts.forEach((context) => {
@@ -119,7 +121,7 @@ const renderFilters = async () => {
     contextsList.append(li);
   });
 
-  const priorities = await taskStats.getPriorities();
+  // const priorities = taskStats.getPriorities(tasks);
   const prioritiesList = document.createElement("ul");
   prioritiesList.classList.add("filter-list");
   priorities.forEach((priority) => {
@@ -149,12 +151,13 @@ const renderFilters = async () => {
   filtersContainer.append(projectsList, contextsList, prioritiesList);
 };
 
-renderFilters();
+// renderFilters();
 
 const renderTasks = async () => {
   /** @type {Task[]} */
   const tasks = await taskManager.getTasks();
-  const stats = await taskStats.getStats();
+  const stats = taskStats.getStats(tasks);
+  renderFilters(stats);
   renderStats(stats);
 
   /** @type {boolean} */
@@ -166,7 +169,7 @@ const renderTasks = async () => {
 
   tasks.toReversed().forEach((task) => {
     if (hideCompletedTasks && task.completed) return;
-    console.log(task);
+
     let valid = true;
     if (projectsFilter.size > 0) {
       if (task.projects === null) return;
@@ -262,7 +265,6 @@ taskInput.addEventListener("keydown", async (e) => {
       await taskManager.addTask(task);
       taskInput.value = "";
       renderTasks();
-      renderFilters();
     }
   }
 });
@@ -277,7 +279,7 @@ addTaskBtn.addEventListener("click", async () => {
   }
 });
 
-const renderStats = async (stats) => {
+const renderStats = (stats) => {
   statsContainer.innerHTML = "";
 
   const totalPending = document.createElement("p");
@@ -296,8 +298,7 @@ const renderStats = async (stats) => {
   completedToday.innerText = `Completed today: ${stats.completedToday}`;
 
   const completedDailyAverage = document.createElement("p");
-  const avg = await taskStats.getAverageCompletedPerDay();
-  completedDailyAverage.innerText = `Average completed per day: ${Math.round(avg * 100)/100}`;
+  completedDailyAverage.innerText = `Average completed per day: ${Math.round(stats.averageCompletedPerDay * 100)/100}`;
 
   const completedWeeklyAverage = document.createElement("p");
   completedWeeklyAverage.innerText = `Average completed per week:`;

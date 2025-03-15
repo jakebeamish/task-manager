@@ -59,11 +59,11 @@ const contextsFilter = new Set();
 const prioritiesFilter = new Set();
 
 const renderFilters = (stats) => {
+
   filtersContainer.innerHTML = "";
 
   const { projects, contexts, priorities } = stats;
 
-  // const projects = taskStats.getProjects(tasks);
   const projectsList = document.createElement("ul");
   projectsList.classList.add("filter-list");
   projects.forEach((project) => {
@@ -94,7 +94,6 @@ const renderFilters = (stats) => {
     projectsList.append(li);
   });
 
-  // const contexts = taskStats.getContexts(tasks);
   const contextsList = document.createElement("ul");
   contextsList.classList.add("filter-list");
   contexts.forEach((context) => {
@@ -121,7 +120,6 @@ const renderFilters = (stats) => {
     contextsList.append(li);
   });
 
-  // const priorities = taskStats.getPriorities(tasks);
   const prioritiesList = document.createElement("ul");
   prioritiesList.classList.add("filter-list");
   priorities.forEach((priority) => {
@@ -152,12 +150,20 @@ const renderFilters = (stats) => {
 };
 
 // renderFilters();
+//
+const initialiseFilters = async () => {
+  const tasks = await taskManager.getTasks();
+  const stats = taskStats.getStats(tasks);
+  renderFilters(stats);
+};
+
+initialiseFilters();
 
 const renderTasks = async () => {
   /** @type {Task[]} */
   const tasks = await taskManager.getTasks();
   const stats = taskStats.getStats(tasks);
-  renderFilters(stats);
+  // renderFilters(stats);
   renderStats(stats);
 
   /** @type {boolean} */
@@ -250,11 +256,13 @@ const renderTasks = async () => {
     deleteBtn.addEventListener("click", async () => {
       await taskManager.deleteTask(task);
       renderTasks();
+      initialiseFilters();
     });
 
     li.appendChild(deleteBtn);
     taskList.appendChild(li);
   });
+
 };
 
 taskInput.addEventListener("keydown", async (e) => {
@@ -265,6 +273,7 @@ taskInput.addEventListener("keydown", async (e) => {
       await taskManager.addTask(task);
       taskInput.value = "";
       renderTasks();
+      initialiseFilters();
     }
   }
 });
@@ -276,6 +285,7 @@ addTaskBtn.addEventListener("click", async () => {
     await taskManager.addTask(task);
     taskInput.value = "";
     renderTasks();
+    initialiseFilters();
   }
 });
 

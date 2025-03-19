@@ -10,11 +10,50 @@ const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
 const statsContainer = document.getElementById("statsContainer");
 const optionsContainer = document.getElementById("optionsContainer");
-const filtersContainer = document.getElementById("filtersContainer");
 
 const storageStrategy = new LocalStorageStrategy();
 const taskManager = new TaskManager(storageStrategy);
 const taskStats = new TaskStats(taskManager);
+
+const elements = {
+  filtersContainer: document.getElementById("filtersContainer"),
+};
+
+const filters = {
+  projects: new Set(),
+  contexts: new Set(),
+  priorities: new Set(),
+};
+
+const createFilterList = (items, filterSet) => {
+  const list = document.createElement("ul");
+  list.classList.add("filter-list");
+
+  items.forEach((item) => {
+    if (!item) return;
+
+    const li = document.createElement("li");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = item;
+    checkbox.checked = filterSet.has(item);
+
+    checkbox.addEventListener("click", () => {
+      if (checkbox.checked) filterSet.add(item);
+      else filterSet.delete(item);
+      renderTasks();
+      li.classList.toggle("selected-filter", checkbox.checked)
+    });
+
+    const label = document.createElement("label");
+    label.htmlFor = item;
+    label.textContent = item;
+
+    li.append(checkbox, label);
+    list.append(li);
+  });
+  return list;
+};
 
 const renderOptions = () => {
   optionsContainer.innerHTML = "";
@@ -61,102 +100,15 @@ const renderOptions = () => {
 
 renderOptions();
 
-const projectsFilter = new Set();
-const contextsFilter = new Set();
-const prioritiesFilter = new Set();
-
 const renderFilters = (stats) => {
-  filtersContainer.innerHTML = "";
-
-  const { projects, contexts, priorities } = stats;
-
-  const projectsList = document.createElement("ul");
-  projectsList.classList.add("filter-list");
-  projects.forEach((project) => {
-    if (!project) return;
-    const li = document.createElement("li");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = project;
-    if (projectsFilter.has(project)) {
-      checkbox.checked = true;
-    }
-
-    checkbox.addEventListener("click", () => {
-      if (checkbox.checked) {
-        projectsFilter.add(project);
-        li.classList.add("selected-project");
-      } else {
-        projectsFilter.delete(project);
-        li.classList.remove("selected-project");
-      }
-      renderTasks();
-    });
-    const label = document.createElement("label");
-    label.htmlFor = project;
-    label.textContent = project;
-    label.classList.add("project-label");
-    li.append(checkbox, label);
-    projectsList.append(li);
-  });
-
-  const contextsList = document.createElement("ul");
-  contextsList.classList.add("filter-list");
-  contexts.forEach((context) => {
-    if (!context) return;
-    const li = document.createElement("li");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = context;
-    if (contextsFilter.has(context)) checkbox.checked = true;
-    checkbox.addEventListener("click", () => {
-      if (checkbox.checked) {
-        contextsFilter.add(context);
-        li.classList.add("selected-context");
-      } else {
-        contextsFilter.delete(context);
-        li.classList.remove("selected-context");
-      }
-      renderTasks();
-    });
-    const label = document.createElement("label");
-    label.htmlFor = context;
-    label.textContent = context;
-    li.append(checkbox, label);
-    contextsList.append(li);
-  });
-
-  const prioritiesList = document.createElement("ul");
-  prioritiesList.classList.add("filter-list");
-  priorities.forEach((priority) => {
-    if (!priority) return;
-    const li = document.createElement("li");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = priority;
-    if (prioritiesFilter.has(priority)) checkbox.checked = true;
-    checkbox.addEventListener("click", () => {
-      if (checkbox.checked) {
-        prioritiesFilter.add(priority);
-        li.classList.add("selected-priority");
-      } else {
-        prioritiesFilter.delete(priority);
-        li.classList.remove("selected-priority");
-      }
-      renderTasks();
-    });
-    const label = document.createElement("label");
-    label.htmlFor = priority;
-    label.textContent = priority;
-    li.append(checkbox, label);
-    prioritiesList.append(li);
-  });
-
-  filtersContainer.append(projectsList, contextsList, prioritiesList);
+  elements.filtersContainer.innerHTML = "";
+  elements.filtersContainer.append(
+    createFilterList(stats.projects, filters.projects, "project"),
+    createFilterList(stats.contexts, filters.contexts, "context"),
+    createFilterList(stats.priorities, filters.priorities, "priority")
+  );
 };
 
-// renderFilters();
-//
 const initialiseFilters = async () => {
   const tasks = await taskManager.getTasks();
   const stats = taskStats.getStats(tasks);
@@ -169,7 +121,6 @@ const renderTasks = async () => {
   /** @type {Task[]} */
   const tasks = await taskManager.getTasks();
   const stats = taskStats.getStats(tasks);
-  // renderFilters(stats);
   renderStats(stats);
 
   /** @type {boolean} */
@@ -182,33 +133,30 @@ const renderTasks = async () => {
   tasks.toReversed().forEach((task) => {
     if (hideCompletedTasks && task.completed) return;
 
-    let valid = true;
-
-    if (projectsFilter.size > 0) {
-      if (
-        !task.projects ||
-        !task.projects.some((project) => projectsFilter.has(project))
-      ) {
-        valid = false;
-      }
+    // If a task does not have any project in filters.projects, skip it
+    if (
+      filters.projects.size > 0 &&
+      (!task.projects ||
+        !task.projects.some((project) => filters.projects.has(project)))
+    ) {
+      return;
     }
 
-    if (contextsFilter.size > 0) {
-      if (
-        !task.contexts ||
-        !task.contexts.some((context) => contextsFilter.has(context))
-      ) {
-        valid = false;
-      }
+    if (
+      filters.contexts.size > 0 &&
+      (!task.contexts ||
+        !task.contexts.some((context) => filters.contexts.has(context)))
+    ) {
+      return;
     }
 
-    if (prioritiesFilter.size > 0) {
-      if (!task.priority || !prioritiesFilter.has(task.priority)) {
-        valid = false;
-      }
+    if (
+      filters.priorities.size > 0 &&
+      (!task.priority || !filters.priorities.has(task.priority))
+    ) {
+      return;
     }
 
-    if (!valid) return;
     const li = document.createElement("li");
     li.classList.add("task-item");
 

@@ -208,9 +208,7 @@ header nav {
   cursor: pointer;
 }
 
-.selected-project label,
-.selected-context label,
-.selected-priority label {
+.selected-filter label {
   border: 1px inset var(--border-medium);
   background: var(--secondary-bg-color)
 }

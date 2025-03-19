@@ -42,7 +42,7 @@ const createFilterList = (items, filterSet) => {
       if (checkbox.checked) filterSet.add(item);
       else filterSet.delete(item);
       renderTasks();
-      li.classList.toggle("selected-filter", checkbox.checked)
+      li.classList.toggle("selected-filter", checkbox.checked);
     });
 
     const label = document.createElement("label");
@@ -58,36 +58,31 @@ const createFilterList = (items, filterSet) => {
 const renderOptions = () => {
   optionsContainer.innerHTML = "";
 
-  let optionContainer = document.createElement("div");
-  optionContainer.classList.add("option-container");
+  const createOption = (id, textContent) => {
+    const optionContainer = document.createElement("div");
+    optionContainer.classList.add("option-container");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.name = id;
+    checkbox.id = id;
+    checkbox.addEventListener("click", () => {
+      renderTasks();
+    });
 
-  const hideCompletedTasksCheckbox = document.createElement("input");
-  hideCompletedTasksCheckbox.type = "checkbox";
-  hideCompletedTasksCheckbox.name = "hideCompletedTasks";
-  hideCompletedTasksCheckbox.id = "hideCompletedTasks";
-  hideCompletedTasksCheckbox.addEventListener("click", () => {
-    renderTasks();
-  });
-  const hideCompletedTasksLabel = document.createElement("label");
-  hideCompletedTasksLabel.innerText = "Hide completed tasks";
-  hideCompletedTasksLabel.htmlFor = hideCompletedTasksCheckbox.id;
-  optionContainer.append(hideCompletedTasksCheckbox, hideCompletedTasksLabel);
-  optionsContainer.append(optionContainer);
+    const label = document.createElement("label");
+    label.htmlFor = id;
+    label.innerText = textContent;
 
-  optionContainer = document.createElement("div");
-  optionContainer.classList.add("option-container");
-  const hideDatesInTasksCheckbox = document.createElement("input");
-  hideDatesInTasksCheckbox.type = "checkbox";
-  hideDatesInTasksCheckbox.name = "hideDatesInTasks";
-  hideDatesInTasksCheckbox.id = "hideDatesInTasks";
-  hideDatesInTasksCheckbox.addEventListener("click", () => {
-    renderTasks();
-  });
-  const hideDatesInTasksLabel = document.createElement("label");
-  hideDatesInTasksLabel.innerText = "Hide dates in tasks";
-  hideDatesInTasksLabel.htmlFor = hideDatesInTasksCheckbox.id;
-  optionContainer.append(hideDatesInTasksCheckbox, hideDatesInTasksLabel);
-  optionsContainer.append(optionContainer);
+    optionContainer.append(checkbox, label);
+    return optionContainer;
+  };
+
+  optionsContainer.append(
+    createOption("hideCompletedTasks", "Hide completed tasks")
+  );
+  optionsContainer.append(
+    createOption("hideDatesInTasks", "Hide dates in tasks")
+  );
 
   const closeButton = document.createElement("button");
   closeButton.innerText = "X";

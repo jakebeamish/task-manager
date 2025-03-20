@@ -1,24 +1,47 @@
 import "./types.js";
 
-export class TaskStats {
-  constructor(taskManager) {
-    this.taskManager = taskManager;
-  }
-
+export const TaskStats = {
   getProjects(tasks) {
     const projects = [...new Set(tasks.flatMap((task) => task.projects))];
-    return projects || [];
-  }
+    return projects;
+  },
 
   getContexts(tasks) {
     const contexts = [...new Set(tasks.flatMap((task) => task.contexts))];
-    return contexts || [];
-  }
+    return contexts;
+  },
 
   getPriorities(tasks) {
     const priorities = [...new Set(tasks.map((task) => task.priority))];
-    return priorities || [];
-  }
+    return priorities;
+  },
+
+  getTotalNumberOfTasks(tasks) {
+    return tasks.length;
+  },
+
+  getNumberOfTasksCreatedToday(tasks) {
+    return tasks.filter((task) => {
+      return task.createdDate === new Date().toISOString().split("T")[0];
+    }).length;
+  },
+
+  getNumberOfTasksCompletedToday(tasks) {
+    return tasks.filter((task) => {
+      return (
+        task.completed &&
+        task.completedDate === new Date().toISOString().split("T")[0]
+      );
+    }).length;
+  },
+
+  getNumberOfCompletedTasks(tasks) {
+    return tasks.filter((task) => task.completed).length;
+  },
+
+  getNumberOfIncompletedTasks(tasks) {
+    return tasks.filter((task) => !task.completed).length;
+  },
 
   getAverageCompletedPerDay(tasks) {
     const completedTasks = tasks.filter((task) => task.completed);
@@ -34,28 +57,20 @@ export class TaskStats {
       ) + 1;
     const averageCompletedPerDay = completedTasks.length / totalDays;
     return averageCompletedPerDay;
-  }
+  },
 
   getStats(tasks) {
     const stats = {
-      total: tasks.length,
-      completed: tasks.filter((task) => task.completed).length,
-      pending: tasks.filter((task) => !task.completed).length,
-      createdToday: tasks.filter((task) => {
-        return task.createdDate === new Date().toISOString().split("T")[0];
-      }).length,
-      completedToday: tasks.filter((task) => {
-        return (
-          task.completed &&
-          task.completedDate === new Date().toISOString().split("T")[0]
-        );
-      }).length,
+      total: this.getTotalNumberOfTasks(tasks),
+      completed: this.getNumberOfCompletedTasks(tasks),
+      pending: this.getNumberOfIncompletedTasks(tasks),
+      createdToday: this.getNumberOfTasksCreatedToday(tasks),
+      completedToday: this.getNumberOfTasksCompletedToday(tasks),
       averageCompletedPerDay: this.getAverageCompletedPerDay(tasks),
-      projects: (this.getProjects(tasks)),
+      projects: this.getProjects(tasks),
       contexts: this.getContexts(tasks),
-      priorities: this.getPriorities(tasks)
+      priorities: this.getPriorities(tasks),
     };
-
     return stats;
-  }
-}
+  },
+};

@@ -13,7 +13,6 @@ const optionsContainer = document.getElementById("optionsContainer");
 
 const storageStrategy = new LocalStorageStrategy();
 const taskManager = new TaskManager(storageStrategy);
-const taskStats = new TaskStats(taskManager);
 
 let toastContainer;
 
@@ -108,7 +107,7 @@ const renderFilters = (stats) => {
 
 const initialiseFilters = async () => {
   const tasks = await taskManager.getTasks();
-  const stats = taskStats.getStats(tasks);
+  const stats = TaskStats.getStats(tasks);
   renderFilters(stats);
 };
 
@@ -135,7 +134,7 @@ const toaster = (message) => {
 const renderTasks = async () => {
   /** @type {Task[]} */
   const tasks = await taskManager.getTasks();
-  const stats = taskStats.getStats(tasks);
+  const stats = TaskStats.getStats(tasks);
   renderStats(stats);
 
   /** @type {boolean} */

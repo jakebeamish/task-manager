@@ -15,6 +15,8 @@ const storageStrategy = new LocalStorageStrategy();
 const taskManager = new TaskManager(storageStrategy);
 const taskStats = new TaskStats(taskManager);
 
+let toastContainer;
+
 const elements = {
   filtersContainer: document.getElementById("filtersContainer"),
 };
@@ -110,7 +112,25 @@ const initialiseFilters = async () => {
   renderFilters(stats);
 };
 
-initialiseFilters();
+const toaster = (message) => {
+  if (!toastContainer) {
+    toastContainer = document.createElement("div");
+    toastContainer.classList.add("toast-container");
+
+    const appContainer = document.querySelector(".app-container")
+    appContainer.appendChild(toastContainer);
+  }
+
+  const toast = document.createElement("div");
+  toast.classList.add("toast");
+  toast.innerText = message;
+  toastContainer.prepend(toast);
+
+  setTimeout(() => toast.classList.add("open"), 10);
+  setTimeout(() => toast.classList.remove("open"), 3000);
+  setTimeout(() => toastContainer.removeChild(toast), 3500);
+}
+
 
 const renderTasks = async () => {
   /** @type {Task[]} */
@@ -165,6 +185,9 @@ const renderTasks = async () => {
       task.completedDate = task.completed
         ? new Date().toISOString().split("T")[0]
         : null;
+      if (checkbox.checked) {
+        toaster("Task completed")
+      }
       taskManager.updateTask(task);
       renderTasks();
     });
@@ -201,6 +224,7 @@ const renderTasks = async () => {
     deleteBtn.textContent = "Delete";
     deleteBtn.addEventListener("click", async () => {
       await taskManager.deleteTask(task);
+      toaster("Task deleted")
       renderTasks();
       initialiseFilters();
     });
@@ -217,6 +241,7 @@ taskInput.addEventListener("keydown", async (e) => {
       const task = TodoTxtParser.parseLine(description);
       await taskManager.addTask(task);
       taskInput.value = "";
+      toaster("Task created");
       renderTasks();
       initialiseFilters();
     }
@@ -229,6 +254,7 @@ addTaskBtn.addEventListener("click", async () => {
     const task = TodoTxtParser.parseLine(description);
     await taskManager.addTask(task);
     taskInput.value = "";
+    toaster("Task created");
     renderTasks();
     initialiseFilters();
   }
@@ -280,4 +306,5 @@ const renderStats = (stats) => {
   });
 };
 
+initialiseFilters();
 renderTasks();

@@ -247,6 +247,14 @@ header nav {
   list-style: none;
   display: flex;
   align-items: center;
+  text-decoration: none;
+  transition: text-decoration 0.5s ease;
+}
+
+.task-item.completed span {
+  text-decoration: line-through var(--secondary-text-color);
+  font-style: italic;
+  color: var(--secondary-text-color);
 }
 
 .task-item input {
@@ -260,6 +268,7 @@ header nav {
   display: inline;
   opacity: 0;
   transition: opacity 0.3s ease;
+  text-decoration: none;
 }
 
 .task-item:hover button {

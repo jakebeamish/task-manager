@@ -176,7 +176,7 @@ const renderTasks = async () => {
 
     const li = document.createElement("li");
     li.classList.add("task-item");
-
+    li.classList.toggle("completed", task.completed);
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = task.completed;

@@ -111,7 +111,7 @@ const initialiseFilters = async () => {
   renderFilters(stats);
 };
 
-const toaster = (message) => {
+const toaster = (message, extraClasses = []) => {
   if (!toastContainer) {
     toastContainer = document.createElement("div");
     toastContainer.classList.add("toast-container");
@@ -122,6 +122,9 @@ const toaster = (message) => {
 
   const toast = document.createElement("div");
   toast.classList.add("toast");
+  for (let extraClass of extraClasses) {
+    toast.classList.add(extraClass);
+  }
   toast.innerText = message;
   toastContainer.prepend(toast);
 
@@ -185,7 +188,7 @@ const renderTasks = async () => {
         ? new Date().toISOString().split("T")[0]
         : null;
       if (checkbox.checked) {
-        toaster("Task completed")
+        toaster("Task completed", ["success"]);
       }
       taskManager.updateTask(task);
       renderTasks();
@@ -240,7 +243,7 @@ taskInput.addEventListener("keydown", async (e) => {
       const task = TodoTxtParser.parseLine(description);
       await taskManager.addTask(task);
       taskInput.value = "";
-      toaster("Task created");
+      toaster("Task added");
       renderTasks();
       initialiseFilters();
     }

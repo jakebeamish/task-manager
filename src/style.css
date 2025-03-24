@@ -288,6 +288,19 @@ select {
   color: red;
 }
 
+.priority:hover::before {
+  color: var(--secondary-text-color);
+  content: "Priority: "
+}
+
+.created-date:hover::before {
+  content: "Created: "
+}
+
+.completed-date:hover::before {
+  content: "Completed: "
+}
+
 .date {
   color: var(--secondary-text-color);
 }

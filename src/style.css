@@ -162,17 +162,27 @@ header nav {
   padding-left: 8px;
 }
 
-.option-container input, .sorting-container label {
+#optionsContainer {
+}
+
+#statsContainer {
+}
+
+.option-container input, .sorting-container label, .groupby-container label {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+}
+
+.option-container, .sorting-container, .groupby-container {
+  /* text-align: right; */
 }
 
 select {
   background: var(--bg-color);
   color: var(--text-color);
-  font-size: 16px;
-  border-radius: 12px;
-  padding: 4px;
+  /* font-size: 12px; */
+  border-radius: 4px;
+  /* padding: 4px; */
   /* padding: 4px 12px; */
 }
 
@@ -284,6 +294,10 @@ select {
   opacity: 1;
 }
 
+.group-header {
+  margin: 1rem 0 0.5rem;
+}
+
 .priority {
   color: red;
 }
@@ -361,6 +375,7 @@ button:hover {
   opacity: 0;
   transform: scale(0.9) translateY(50px);
   transition: margin-top 0.5s, transform 0.5s, opacity 0.5s;
+  background: var(--bg-color);
 }
 
 .toast.open {

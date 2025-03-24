@@ -87,6 +87,38 @@ const createSortingDropdown = () => {
   optionsContainer.append(sortingContainer);
 };
 
+const createGroupByDropdown = () => {
+  const groupByContainer = document.createElement("div");
+  groupByContainer.classList.add("groupby-container");
+
+  const label = document.createElement("label");
+  label.textContent = "Group by:";
+  label.htmlFor = "groupTasks";
+  const select = document.createElement("select");
+  select.id = "groupTasks";
+
+  const options = [
+    { value: "none", text: "none" },
+    { value: "priority", text: "Priority" },
+    { value: "project", text: "Project" },
+    { value: "context", text: "Context" }
+  ];
+
+  options.forEach(({value, text}) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = text;
+    select.appendChild(option);
+  });
+
+  select.addEventListener("change", () => {
+    renderTasks();
+  })
+
+  groupByContainer.append(label, select);
+  optionsContainer.append(groupByContainer)
+}
+
 const renderOptions = () => {
   optionsContainer.innerHTML = "";
 
@@ -117,6 +149,7 @@ const renderOptions = () => {
   );
 
   createSortingDropdown();
+  createGroupByDropdown();
 
   const closeButton = document.createElement("button");
   closeButton.innerText = "X";
@@ -180,6 +213,7 @@ const renderTasks = async () => {
   taskList.innerHTML = "";
 
   const sortBy = document.getElementById("sortTasks")?.value || "createdDate";
+  const groupBy = document.getElementById("groupTasks")?.value || "none";
 
   tasks = tasks.sort((a, b) => {
     switch (sortBy) {
@@ -192,7 +226,48 @@ const renderTasks = async () => {
     }
   });
 
-  tasks.toReversed().forEach((task) => {
+  const groupedTasks = {};
+  if (groupBy !== "none") {
+    tasks.forEach(task => {
+      let groupKey;
+
+      switch (groupBy) {
+        case "priority":
+          groupKey = task.priority || "No priority";
+          break;
+        case "project":
+          groupKey = task.projects?.length ? task.projects.join(", ") : "No Project";
+          break;
+        case "context":
+          groupKey = task.contexts?.length ? task.contexts.join(", ") : "No Context";
+        default:
+          groupKey = "Ungrouped";
+      }
+
+      if (!groupedTasks[groupKey]) {
+        groupedTasks[groupKey] = [];
+      }
+
+      groupedTasks[groupKey].push(task);
+    });
+  } else {
+    groupedTasks["Ungrouped"] = tasks;
+  };
+
+  for (const [groupName, groupTasks] of Object.entries(groupedTasks)) {
+
+    const groupContainer = document.createElement("div");
+    groupContainer.id = "group-container";
+
+    if (groupBy !== "none" && groupTasks.length > 0) {
+      console.log(groupName, groupTasks)
+      const groupHeader = document.createElement("h3");
+      groupHeader.textContent = `${groupName}`;
+      groupHeader.classList.add("group-header");
+      taskList.appendChild(groupHeader);
+    }
+
+  groupTasks.toReversed().forEach((task) => {
     if (hideCompletedTasks && task.completed) return;
 
     // If a task does not have any project in filters.projects, skip it
@@ -279,6 +354,7 @@ const renderTasks = async () => {
     li.appendChild(deleteBtn);
     taskList.appendChild(li);
   });
+  }
 };
 
 taskInput.addEventListener("keydown", async (e) => {

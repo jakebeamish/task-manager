@@ -162,9 +162,18 @@ header nav {
   padding-left: 8px;
 }
 
-.option-container input {
+.option-container input, .sorting-container label {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+}
+
+select {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-size: 16px;
+  border-radius: 12px;
+  padding: 4px;
+  /* padding: 4px 12px; */
 }
 
 .app-container {

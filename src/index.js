@@ -56,6 +56,37 @@ const createFilterList = (items, filterSet) => {
   return list;
 };
 
+const createSortingDropdown = () => {
+  const sortingContainer = document.createElement("div");
+  sortingContainer.classList.add("sorting-container");
+
+  const label = document.createElement("label");
+  label.textContent = "Sort by:";
+  label.htmlFor = "sortTasks";
+
+  const select = document.createElement("select");
+  select.id = "sortTasks";
+
+  const options = [
+    { value: "createdDate", text: "Created Date" },
+    // { value: "completedDate", text: "Completed Date" },
+    { value: "priority", text: "Priority" },
+    // { value: "description", text: "Description (A-Z)" }
+  ];
+
+  options.forEach(({ value, text }) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = text;
+    select.appendChild(option);
+  });
+
+  select.addEventListener("change", () => renderTasks());
+
+  sortingContainer.append(label, select);
+  optionsContainer.append(sortingContainer);
+};
+
 const renderOptions = () => {
   optionsContainer.innerHTML = "";
 
@@ -84,6 +115,8 @@ const renderOptions = () => {
   optionsContainer.append(
     createOption("hideDatesInTasks", "Hide dates in tasks")
   );
+
+  createSortingDropdown();
 
   const closeButton = document.createElement("button");
   closeButton.innerText = "X";
@@ -116,7 +149,7 @@ const toaster = (message, extraClasses = []) => {
     toastContainer = document.createElement("div");
     toastContainer.classList.add("toast-container");
 
-    const appContainer = document.querySelector(".app-container")
+    const appContainer = document.querySelector(".app-container");
     appContainer.appendChild(toastContainer);
   }
 
@@ -131,12 +164,11 @@ const toaster = (message, extraClasses = []) => {
   setTimeout(() => toast.classList.add("open"), 10);
   setTimeout(() => toast.classList.remove("open"), 3000);
   setTimeout(() => toastContainer.removeChild(toast), 3500);
-}
-
+};
 
 const renderTasks = async () => {
   /** @type {Task[]} */
-  const tasks = await taskManager.getTasks();
+  let tasks = await taskManager.getTasks();
   const stats = TaskStats.getStats(tasks);
   renderStats(stats);
 
@@ -146,6 +178,19 @@ const renderTasks = async () => {
   /** @type {boolean} */
   const hideDatesInTasks = document.getElementById("hideDatesInTasks").checked;
   taskList.innerHTML = "";
+
+  const sortBy = document.getElementById("sortTasks")?.value || "createdDate";
+
+  tasks = tasks.sort((a, b) => {
+    switch (sortBy) {
+      case "createdDate":
+        return new Date(a.createdDate) - new Date(b.createdDate);
+      case "priority":
+        return (b.priority ?? "Z").localeCompare(a.priority ?? "Z");
+      default:
+        return 0;
+    }
+  });
 
   tasks.toReversed().forEach((task) => {
     if (hideCompletedTasks && task.completed) return;
@@ -226,7 +271,7 @@ const renderTasks = async () => {
     deleteBtn.textContent = "Delete";
     deleteBtn.addEventListener("click", async () => {
       await taskManager.deleteTask(task);
-      toaster("Task deleted")
+      toaster("Task deleted");
       renderTasks();
       initialiseFilters();
     });

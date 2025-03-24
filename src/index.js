@@ -101,10 +101,10 @@ const createGroupByDropdown = () => {
     { value: "none", text: "none" },
     { value: "priority", text: "Priority" },
     { value: "project", text: "Project" },
-    { value: "context", text: "Context" }
+    { value: "context", text: "Context" },
   ];
 
-  options.forEach(({value, text}) => {
+  options.forEach(({ value, text }) => {
     const option = document.createElement("option");
     option.value = value;
     option.textContent = text;
@@ -113,11 +113,11 @@ const createGroupByDropdown = () => {
 
   select.addEventListener("change", () => {
     renderTasks();
-  })
+  });
 
   groupByContainer.append(label, select);
-  optionsContainer.append(groupByContainer)
-}
+  optionsContainer.append(groupByContainer);
+};
 
 const renderOptions = () => {
   optionsContainer.innerHTML = "";
@@ -199,101 +199,36 @@ const toaster = (message, extraClasses = []) => {
   setTimeout(() => toastContainer.removeChild(toast), 3500);
 };
 
-const renderTasks = async () => {
-  /** @type {Task[]} */
-  let tasks = await taskManager.getTasks();
-  const stats = TaskStats.getStats(tasks);
-  renderStats(stats);
+const getGroupKey = (task, groupBy) => {
+  switch (groupBy) {
+    case "priority":
+      return task.priority || "No priority";
+      break;
+    case "project":
+      return task.projects?.length ? task.projects.join(", ") : "No Project";
+      break;
+    case "context":
+      return task.contexts?.length ? task.contexts.join(", ") : "No Context";
+    default:
+      return "Ungrouped";
+  }
+};
 
-  /** @type {boolean} */
-  const hideCompletedTasks =
-    document.getElementById("hideCompletedTasks").checked;
-  /** @type {boolean} */
-  const hideDatesInTasks = document.getElementById("hideDatesInTasks").checked;
-  taskList.innerHTML = "";
+const renderTaskGroup = (groupName, tasks, hideDatesInTasks) => {
+  if (tasks.length === 0) return;
 
-  const sortBy = document.getElementById("sortTasks")?.value || "createdDate";
-  const groupBy = document.getElementById("groupTasks")?.value || "none";
+  const groupContainer = document.createElement("div");
+  groupContainer.classList.add("task-group");
 
-  tasks = tasks.sort((a, b) => {
-    switch (sortBy) {
-      case "createdDate":
-        return new Date(a.createdDate) - new Date(b.createdDate);
-      case "priority":
-        return (b.priority ?? "Z").localeCompare(a.priority ?? "Z");
-      default:
-        return 0;
-    }
-  });
+  const groupHeader = document.createElement("h3");
+  groupHeader.textContent = `${groupName}`;
+  groupHeader.classList.add("group-header");
+  groupContainer.appendChild(groupHeader);
 
-  const groupedTasks = {};
-  if (groupBy !== "none") {
-    tasks.forEach(task => {
-      let groupKey;
+  const groupList = document.createElement("ul");
+  groupList.classList.add("group-task-list");
 
-      switch (groupBy) {
-        case "priority":
-          groupKey = task.priority || "No priority";
-          break;
-        case "project":
-          groupKey = task.projects?.length ? task.projects.join(", ") : "No Project";
-          break;
-        case "context":
-          groupKey = task.contexts?.length ? task.contexts.join(", ") : "No Context";
-        default:
-          groupKey = "Ungrouped";
-      }
-
-      if (!groupedTasks[groupKey]) {
-        groupedTasks[groupKey] = [];
-      }
-
-      groupedTasks[groupKey].push(task);
-    });
-  } else {
-    groupedTasks["Ungrouped"] = tasks;
-  };
-
-  for (const [groupName, groupTasks] of Object.entries(groupedTasks)) {
-
-    const groupContainer = document.createElement("div");
-    groupContainer.id = "group-container";
-
-    if (groupBy !== "none" && groupTasks.length > 0) {
-      console.log(groupName, groupTasks)
-      const groupHeader = document.createElement("h3");
-      groupHeader.textContent = `${groupName}`;
-      groupHeader.classList.add("group-header");
-      taskList.appendChild(groupHeader);
-    }
-
-  groupTasks.toReversed().forEach((task) => {
-    if (hideCompletedTasks && task.completed) return;
-
-    // If a task does not have any project in filters.projects, skip it
-    if (
-      filters.projects.size > 0 &&
-      (!task.projects ||
-        !task.projects.some((project) => filters.projects.has(project)))
-    ) {
-      return;
-    }
-
-    if (
-      filters.contexts.size > 0 &&
-      (!task.contexts ||
-        !task.contexts.some((context) => filters.contexts.has(context)))
-    ) {
-      return;
-    }
-
-    if (
-      filters.priorities.size > 0 &&
-      (!task.priority || !filters.priorities.has(task.priority))
-    ) {
-      return;
-    }
-
+  tasks.toReversed().forEach((task) => {
     const li = document.createElement("li");
     li.classList.add("task-item");
     li.classList.toggle("completed", task.completed);
@@ -316,13 +251,13 @@ const renderTasks = async () => {
 
     const taskContentSpan = document.createElement("span");
     taskContentSpan.classList.add("task-content-span");
-    const priority = task.priority ? `${task.priority} ` : "";
+
     const createdDate = task.createdDate ? `${task.createdDate} ` : "";
     const completedDate = task.completedDate ? `${task.completedDate} ` : "";
 
     const prioritySpan = document.createElement("span");
     prioritySpan.classList.add("priority");
-    prioritySpan.textContent = priority;
+    prioritySpan.textContent = task.priority ? `${task.priority} ` : "";
 
     const createdDateSpan = document.createElement("span");
     createdDateSpan.classList.add("date", "created-date");
@@ -352,8 +287,94 @@ const renderTasks = async () => {
     });
 
     li.appendChild(deleteBtn);
-    taskList.appendChild(li);
+    groupList.appendChild(li);
   });
+
+  groupContainer.appendChild(groupList);
+  taskList.appendChild(groupContainer);
+};
+
+const renderTasks = async () => {
+  /** @type {Task[]} */
+  let tasks = await taskManager.getTasks();
+  const stats = TaskStats.getStats(tasks);
+  renderStats(stats);
+
+  /** @type {boolean} */
+  const hideCompletedTasks =
+    document.getElementById("hideCompletedTasks").checked;
+  /** @type {boolean} */
+  const hideDatesInTasks = document.getElementById("hideDatesInTasks").checked;
+  taskList.innerHTML = "";
+
+  const sortBy = document.getElementById("sortTasks")?.value || "createdDate";
+  const groupBy = document.getElementById("groupTasks")?.value || "none";
+
+  let filteredTasks = tasks.filter((task) => {
+    if (hideCompletedTasks && task.completed) return false;
+
+    // If a task does not have any project in filters.projects, skip it
+    if (
+      filters.projects.size > 0 &&
+      (!task.projects ||
+        !task.projects.some((project) => filters.projects.has(project)))
+    ) {
+      return false;
+    }
+
+    if (
+      filters.contexts.size > 0 &&
+      (!task.contexts ||
+        !task.contexts.some((context) => filters.contexts.has(context)))
+    ) {
+      return false;
+    }
+
+    if (
+      filters.priorities.size > 0 &&
+      (!task.priority || !filters.priorities.has(task.priority))
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+
+  filteredTasks = filteredTasks.sort((a, b) => {
+    switch (sortBy) {
+      case "createdDate":
+        return new Date(a.createdDate) - new Date(b.createdDate);
+      case "priority":
+        return (b.priority ?? "Z").localeCompare(a.priority ?? "Z");
+      default:
+        return 0;
+    }
+  });
+
+  const groupedTasks = {};
+  if (groupBy !== "none") {
+    filteredTasks.forEach((task) => {
+      let groupKey = getGroupKey(task, groupBy);
+
+      if (!groupedTasks[groupKey]) {
+        groupedTasks[groupKey] = [];
+      }
+
+      groupedTasks[groupKey].push(task);
+    });
+
+    const sortedGroupKeys = Object.keys(groupedTasks).sort((a, b) => {
+      if (a.startsWith("No ") && !b.startsWith("No ")) return 1;
+      if (!a.startsWith("No ") && b.startsWith("No ")) return -1;
+
+      return a.localeCompare(b);
+    });
+
+    for (const groupKey of sortedGroupKeys) {
+      renderTaskGroup(groupKey, groupedTasks[groupKey], hideDatesInTasks);
+    }
+  } else {
+    renderTaskGroup("All Tasks", filteredTasks, hideDatesInTasks);
   }
 };
 

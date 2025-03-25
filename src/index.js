@@ -288,12 +288,10 @@ const renderTaskGroup = (groupName, tasks, hideDatesInTasks) => {
     deleteBtn.addEventListener("click", async (e) => {
       e.stopPropagation(); // Prevent event bubbling
 
-      const taskId = e.currentTarget.dataset.taskId;
-      const taskToDelete = await taskManager.getTask(taskId);
-        await taskManager.deleteTask(task);
-        toaster("Task deleted");
-        renderTasks();
-        initialiseFilters();
+      await taskManager.deleteTask(task);
+      toaster("Task deleted");
+      renderTasks();
+      initialiseFilters();
     });
 
     li.appendChild(deleteBtn);

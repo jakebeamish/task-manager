@@ -352,6 +352,10 @@ select {
 .task-item button {
   margin-left: auto;
   display: inline;
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  background: var(--bg-color);
   opacity: 0;
   transition: opacity 0.3s ease;
   text-decoration: none;

@@ -227,7 +227,7 @@ const renderTaskGroup = (groupName, tasks, hideDatesInTasks) => {
 
   groupHeader.addEventListener("click", () => {
     groupContainer.classList.toggle("collapsed");
-  })
+  });
 
   const groupList = document.createElement("ul");
   groupList.classList.add("group-task-list");
@@ -283,11 +283,17 @@ const renderTaskGroup = (groupName, tasks, hideDatesInTasks) => {
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
-    deleteBtn.addEventListener("click", async () => {
-      await taskManager.deleteTask(task);
-      toaster("Task deleted");
-      renderTasks();
-      initialiseFilters();
+    deleteBtn.dataset.taskId = task.id;
+
+    deleteBtn.addEventListener("click", async (e) => {
+      e.stopPropagation(); // Prevent event bubbling
+
+      const taskId = e.currentTarget.dataset.taskId;
+      const taskToDelete = await taskManager.getTask(taskId);
+        await taskManager.deleteTask(task);
+        toaster("Task deleted");
+        renderTasks();
+        initialiseFilters();
     });
 
     li.appendChild(deleteBtn);
@@ -399,6 +405,58 @@ taskInput.addEventListener("keydown", async (e) => {
     }
   }
 });
+// Prevent default drag behaviors
+["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+  taskInput.addEventListener(eventName, preventDefaults, false);
+  document.body.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+taskInput.addEventListener("drop", handleDrop, false);
+
+async function handleDrop(e) {
+  const dt = e.dataTransfer;
+  const files = dt.files;
+
+  if (files.length > 0) {
+    const file = files[0];
+    if (file.name.endsWith(".txt") || file.type === "text/plain") {
+      try {
+        const content = await readFile(file);
+        await importTasksFromTodoTxt(content);
+        toaster(`Imported ${file.name} successfully`, ["success"]);
+      } catch (error) {
+        toaster("Error importing file", ["error"]);
+      }
+    } else {
+      toaster("Please drop a .txt file", ["error"]);
+    }
+  }
+}
+
+function readFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => resolve(event.target.result);
+    reader.onerror = (error) => reject(error);
+    reader.readAsText(file);
+  });
+}
+
+async function importTasksFromTodoTxt(content) {
+  const lines = content.split("\n").filter((line) => line.trim() !== "");
+
+  for (const line of lines) {
+    const task = TodoTxtParser.parseLine(line);
+    await taskManager.addTask(task);
+  }
+
+  renderTasks();
+  initialiseFilters();
+}
 
 addTaskBtn.addEventListener("click", async () => {
   const description = taskInput.value.trim();

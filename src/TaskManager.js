@@ -26,6 +26,11 @@ export class TaskManager {
     return this.storageStrategy.getAll();
   }
 
+  async getTask(id) {
+    const tasks = await this.getTasks();
+    return tasks.find(task => task.id === id);
+  }
+
   async updateTask(task) {
     await this.storageStrategy.update(task);
   }

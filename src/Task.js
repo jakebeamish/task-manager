@@ -21,7 +21,7 @@ export class Task {
     } = taskData;
     this.description = description;
     this.completed = completed;
-    this.id = id || Date.now();
+    this.id = id || Date.now().toString(36) + Math.random().toString(36).substr(2);
     this.createdDate = createdDate || null;
     this.completedDate = completedDate || null;
     this.priority = priority || null;

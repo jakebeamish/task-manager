@@ -221,9 +221,13 @@ const renderTaskGroup = (groupName, tasks, hideDatesInTasks) => {
   groupContainer.classList.add("task-group");
 
   const groupHeader = document.createElement("h3");
-  groupHeader.textContent = `${groupName}`;
+  groupHeader.textContent = `${groupName} (${tasks.length})`;
   groupHeader.classList.add("group-header");
   groupContainer.appendChild(groupHeader);
+
+  groupHeader.addEventListener("click", () => {
+    groupContainer.classList.toggle("collapsed");
+  })
 
   const groupList = document.createElement("ul");
   groupList.classList.add("group-task-list");
@@ -292,6 +296,10 @@ const renderTaskGroup = (groupName, tasks, hideDatesInTasks) => {
 
   groupContainer.appendChild(groupList);
   taskList.appendChild(groupContainer);
+
+  setTimeout(() => {
+    groupContainer.style.opacity = 1;
+  }, 100);
 };
 
 const renderTasks = async () => {

@@ -18,7 +18,6 @@
   --nord14: #a3be8c;
   --nord15: #b48ead;
 
-
   --gray-100: #f5f5f5; /* Very light gray, used for background */
   --gray-200: #eeeeee; /* Light gray, subtle backgrounds */
   --gray-300: #e0e0e0; /* Light gray, often used for borders or subtle dividers */
@@ -139,7 +138,8 @@ header nav {
   margin-bottom: 0.5rem;
 }
 
-#statsContainer, #optionsContainer {
+#statsContainer,
+#optionsContainer {
   display: none;
   position: relative;
   padding: 8px 12px;
@@ -149,11 +149,13 @@ header nav {
   border: 1px inset var(--border-medium);
 }
 
-#statsContainer .close-btn, #optionsContainer .close-btn {
+#statsContainer .close-btn,
+#optionsContainer .close-btn {
   opacity: 0;
 }
 
-#statsContainer:hover .close-btn, #optionsContainer:hover .close-btn {
+#statsContainer:hover .close-btn,
+#optionsContainer:hover .close-btn {
   opacity: 1;
   transition: opacity 0.3s ease;
 }
@@ -168,12 +170,16 @@ header nav {
 #statsContainer {
 }
 
-.option-container input, .sorting-container label, .groupby-container label {
+.option-container input,
+.sorting-container label,
+.groupby-container label {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
 
-.option-container, .sorting-container, .groupby-container {
+.option-container,
+.sorting-container,
+.groupby-container {
   /* text-align: right; */
 }
 
@@ -224,13 +230,13 @@ select {
 
 .selected-filter label {
   border: 1px inset var(--border-medium);
-  background: var(--secondary-bg-color)
+  background: var(--secondary-bg-color);
 }
 
 .input-container {
   display: flex;
   gap: 8px;
-  margin: 10px 0px;
+  margin: 10px 0px 2rem;
   padding: 8px 12px;
   border-radius: 12px;
   background: var(--secondary-bg-color);
@@ -257,6 +263,67 @@ select {
 .task-list {
   border-radius: 4px;
   padding: 4px 12px;
+}
+
+.task-group {
+  border: 1px solid var(--border-medium);
+  border-radius: 12px;
+  padding: 0 1rem 1rem;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.task-group.collapsed {
+  padding-bottom: 0rem;
+  box-shadow: none;
+}
+
+.group-header {
+  /* background-color: var(--secondary-bg-color); */
+  position: sticky;
+  top: 0;
+  margin: 0 -1rem 0.5rem -1rem !important;
+  border-radius: 12px 12px 0 0;
+  border-bottom: 1px inset var(--border-medium);
+  padding: 0.5rem 1rem 0.5rem;
+  user-select: none;
+  cursor: pointer;
+  padding-right: 2rem;
+}
+
+.group-header:hover::after {
+  content: "-";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+
+.group-task-list {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: 
+    max-height 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.task-group:not(.collapsed) .group-task-list {
+  max-height: 1000px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.task-group.collapsed .group-header {
+  border: none;
+  padding-bottom: 0;
+}
+
+.task-group.collapsed .group-header:hover::after {
+  content: "+";
 }
 
 .task-item {
@@ -304,15 +371,15 @@ select {
 
 .priority:hover::before {
   color: var(--secondary-text-color);
-  content: "Priority: "
+  content: "Priority: ";
 }
 
 .created-date:hover::before {
-  content: "Created: "
+  content: "Created: ";
 }
 
 .completed-date:hover::before {
-  content: "Completed: "
+  content: "Completed: ";
 }
 
 .date {
@@ -374,7 +441,10 @@ button:hover {
   padding: 4px 12px;
   opacity: 0;
   transform: scale(0.9) translateY(50px);
-  transition: margin-top 0.5s, transform 0.5s, opacity 0.5s;
+  transition:
+    margin-top 0.5s,
+    transform 0.5s,
+    opacity 0.5s;
   background: var(--bg-color);
 }
 

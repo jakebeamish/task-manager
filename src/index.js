@@ -68,7 +68,8 @@ const createSortingDropdown = () => {
   select.id = "sortTasks";
 
   const options = [
-    { value: "createdDate", text: "Created Date" },
+    { value: "createdDateOldest", text: "Created Date (Oldest first)" },
+    { value: "createdDateNewest", text: "Created Date (Newest first)" },
     // { value: "completedDate", text: "Completed Date" },
     { value: "priority", text: "Priority" },
     // { value: "description", text: "Description (A-Z)" }
@@ -303,7 +304,7 @@ const renderTaskGroup = (groupName, tasks, hideDatesInTasks) => {
 
   setTimeout(() => {
     groupContainer.style.opacity = 1;
-  }, 100);
+  }, 900);
 };
 
 const renderTasks = async () => {
@@ -353,9 +354,15 @@ const renderTasks = async () => {
   });
 
   filteredTasks = filteredTasks.sort((a, b) => {
+
+    const dateA = new Date(a.createdDate);
+    const dateB = new Date(b.createdDate);
+
     switch (sortBy) {
-      case "createdDate":
-        return new Date(a.createdDate) - new Date(b.createdDate);
+      case "createdDateOldest":
+        return dateB - dateA;
+      case "createdDateNewest":
+        return dateA - dateB;
       case "priority":
         return (b.priority ?? "Z").localeCompare(a.priority ?? "Z");
       default:

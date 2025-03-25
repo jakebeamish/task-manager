@@ -147,6 +147,23 @@ header nav {
   margin-bottom: 12px;
   color: var(--secondary-text-color);
   border: 1px inset var(--border-medium);
+  animation: fadeIn 0.4s ease forwards;
+}
+
+#optionsContainer .option-container {
+  display: flex;
+  align-items: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 #statsContainer .close-btn,
@@ -161,13 +178,24 @@ header nav {
 }
 
 .stat-container {
-  padding-left: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  padding-left: 0.5rem;
 }
 
-#optionsContainer {
+#statsContainer p {
+  margin: 0;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
 }
 
-#statsContainer {
+.sorting-container select,
+.groupby-container select {
+  /* width: 100%; */
+  margin-bottom: 0.5rem;
+
 }
 
 .option-container input,
@@ -177,15 +205,16 @@ header nav {
   margin-right: 0.5rem;
 }
 
-.option-container,
-.sorting-container,
-.groupby-container {
-  /* text-align: right; */
+.sorting-container label,
+.groupby-container label {
+  display: block;
+  /* margin-bottom: 0.5rem; */
 }
 
 select {
   background: var(--bg-color);
   color: var(--text-color);
+  font-size: inherit;
   /* font-size: 12px; */
   border-radius: 4px;
   /* padding: 4px; */
